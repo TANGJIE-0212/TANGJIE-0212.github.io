@@ -1,7 +1,0 @@
-# Cloudflare Pages 不需要 wrangler.toml 来部署静态资产 + Pages Functions。
-# 以下仅作参考，实际部署通过 Cloudflare 控制台或 Pages CI 完成。
-
-name = "daytoy-portfolio"
-compatibility_date = "2024-11-01"
-
-pages_build_output_dir = "."
