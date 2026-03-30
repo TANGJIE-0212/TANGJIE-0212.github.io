@@ -3,7 +3,7 @@
  *
  * Environment variables required (set in Cloudflare Pages dashboard):
  *   RESEND_API_KEY   — your Resend API key (re_xxxxxxxx)
- *   TO_EMAIL         — where you want to receive messages, e.g. hi@daytoy.online
+ *   TO_EMAIL         — where you want to receive messages, e.g. contact@daytoy.online
  */
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -40,7 +40,7 @@ export async function onRequestPost(context) {
   }
 
   const apiKey = env.RESEND_API_KEY;
-  const toEmail = env.TO_EMAIL || 'hi@daytoy.online';
+  const toEmail = env.TO_EMAIL || 'contact@daytoy.online';
 
   if (!apiKey) {
     console.error('RESEND_API_KEY is not set');
@@ -48,7 +48,7 @@ export async function onRequestPost(context) {
   }
 
   const resendPayload = {
-    from: 'daytoy.online <noreply@daytoy.online>',
+    from: 'daytoy.online <contact@daytoy.online>',
     to: [toEmail],
     reply_to: email,
     subject: `[daytoy.online] New message from ${name}`,
