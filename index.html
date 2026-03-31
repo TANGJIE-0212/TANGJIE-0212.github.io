@@ -690,7 +690,9 @@
     }
 
     .gallery-bg--screenshot {
-      background-position: center top;
+      inset: -1%;
+      background-position: left top;
+      transform: scale(1.01) translateX(calc(var(--parallax-x, 0px) * 0.35));
     }
 
     .gallery-overlay {
