@@ -707,6 +707,12 @@
       transform: scale(1) translateX(calc(var(--parallax-x, 0px) * 0.12));
     }
 
+    .gallery-bg--generated-cover {
+      inset: 0;
+      background-position: center center;
+      transform: scale(1.01) translateX(calc(var(--parallax-x, 0px) * 0.08));
+    }
+
     .gallery-overlay {
       position: absolute;
       inset: 0;
@@ -723,6 +729,12 @@
       background:
         linear-gradient(180deg, rgba(8, 12, 24, 0.02) 0%, rgba(8, 12, 24, 0.08) 28%, rgba(10, 11, 14, 0.82) 100%),
         linear-gradient(90deg, rgba(8, 12, 24, 0.05), rgba(8, 12, 24, 0));
+    }
+
+    .gallery-overlay--generated {
+      background:
+        linear-gradient(180deg, rgba(8, 12, 24, 0.02) 0%, rgba(8, 12, 24, 0.04) 26%, rgba(10, 11, 14, 0.78) 100%),
+        linear-gradient(90deg, rgba(8, 12, 24, 0.06), rgba(8, 12, 24, 0));
     }
 
     .gallery-content {
@@ -1220,8 +1232,8 @@
 
             <div class="gallery-item">
               <div class="gallery-card" data-live-url="/projects/ai-paper-radar/" tabindex="0" role="link" aria-label="Open AI Paper Radar live site">
-                <div class="gallery-bg gallery-bg--banner-screenshot" style="--bg: linear-gradient(180deg, rgba(18, 24, 44, 0.03), rgba(18, 24, 44, 0.12)), url('/projects/ai-paper-radar/cover.png?v=2');"></div>
-                <div class="gallery-overlay gallery-overlay--banner"></div>
+                <div class="gallery-bg gallery-bg--generated-cover" style="--bg: linear-gradient(180deg, rgba(18, 24, 44, 0.02), rgba(18, 24, 44, 0.1)), url('/projects/ai-paper-radar/cover-hero.svg?v=1');"></div>
+                <div class="gallery-overlay gallery-overlay--generated"></div>
                 <div class="gallery-content">
                   <div class="flex items-center gap-4 mb-4">
                     <span class="text-sm font-medium text-white/50">02</span>
