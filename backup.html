@@ -263,390 +263,213 @@
       align-items: start;
     }
 
-        .blob-frame {
+    .blob-frame {
       position: relative;
       width: min(100%, 17rem);
       aspect-ratio: 1 / 1;
       margin-bottom: 2rem;
       overflow: hidden;
       border-radius: 56% 44% 62% 38% / 41% 61% 39% 59%;
-      background-color: rgba(14, 14, 14, 0.98);
-      background-image: url('./avatar.png');
-      background-size: cover;
-      background-position: center 30%;
-      border: 4px solid rgba(255, 255, 255, 0.6);
-      animation: morphAvatar 6s ease-in-out infinite;
+      background: linear-gradient(135deg, rgba(14, 14, 14, 0.98), rgba(44, 44, 44, 0.92));
+      animation: morphBlob 10s ease-in-out infinite;
       box-shadow: 0 30px 60px rgba(18, 18, 18, 0.16);
     }
 
+    .blob-frame::before {
+      content: '';
+      position: absolute;
+      inset: 9%;
+      border-radius: 43% 57% 36% 64% / 53% 38% 62% 47%;
+      background:
+        radial-gradient(circle at 42% 28%, rgba(255, 255, 255, 0.95), transparent 16%),
+        radial-gradient(circle at 52% 70%, rgba(255, 255, 255, 0.24), transparent 28%),
+        linear-gradient(180deg, rgba(14, 14, 14, 1), rgba(45, 45, 45, 0.9));
+      animation: morphBlobInner 12s ease-in-out infinite;
+      filter: grayscale(1);
+    }
 
-
+    .blob-frame::after {
+      content: 'TT';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 14%;
+      text-align: center;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 4rem;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.84);
+    }
 
     .profile-dot {
-
       position: absolute;
-
       right: 1rem;
-
       bottom: 1rem;
-
       width: 2.4rem;
-
       height: 2.4rem;
-
       border-radius: 999px;
-
       display: grid;
-
       place-items: center;
-
       border: 1px solid rgba(255, 255, 255, 0.56);
-
       background: rgba(10, 10, 10, 0.88);
-
       color: rgba(255, 255, 255, 0.8);
-
       box-shadow: 0 12px 30px rgba(8, 8, 8, 0.18);
-
       backdrop-filter: blur(8px);
-
     }
-
-
 
     .profile-meta {
-
       display: flex;
-
       flex-wrap: wrap;
-
       gap: 1rem 1.4rem;
-
       font-size: 0.7rem;
-
       letter-spacing: 0.16em;
-
       text-transform: uppercase;
-
       color: var(--muted);
-
     }
-
-
 
     .skill-chip {
-
       display: inline-flex;
-
       align-items: center;
-
       gap: 0.6rem;
-
       padding: 0.75rem 1rem;
-
       border-radius: 999px;
-
       border: 1px solid var(--line);
-
       background: rgba(255, 255, 255, 0.74);
-
       color: rgba(30, 29, 27, 0.9);
-
       transition: background-color 0.22s ease, color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
-
     }
-
-
 
     .skill-chip:hover {
-
       background: rgba(25, 24, 23, 0.94);
-
       color: rgba(255, 255, 255, 0.94);
-
       border-color: rgba(25, 24, 23, 0.94);
-
       transform: translateY(-2px);
-
     }
-
-
 
     .skill-chip svg {
-
       width: 1rem;
-
       height: 1rem;
-
       flex-shrink: 0;
-
     }
-
-
 
     .timeline-shell {
-
       position: relative;
-
       padding-left: 3rem;
-
       perspective: 1400px;
-
       transform-style: preserve-3d;
-
     }
-
-
 
     .timeline-shell::-webkit-scrollbar {
-
       width: 8px;
-
     }
-
-
 
     .timeline-shell::-webkit-scrollbar-track {
-
       background: rgba(64, 53, 42, 0.06);
-
       border-radius: 999px;
-
     }
-
-
 
     .timeline-shell::-webkit-scrollbar-thumb {
-
       background: rgba(95, 72, 53, 0.34);
-
       border-radius: 999px;
-
     }
-
-
 
     .timeline-shell::before {
-
       content: '';
-
       position: absolute;
-
       top: 0.75rem;
-
       bottom: 0.75rem;
-
       left: 0.7rem;
-
       width: 1px;
-
       background: linear-gradient(180deg, transparent, rgba(64, 53, 42, 0.26), transparent);
-
     }
-
-
 
     .timeline-item {
-
       position: relative;
-
       margin-bottom: 1.35rem;
-
     }
-
-
 
     .timeline-node {
-
       position: absolute;
-
       top: 1.25rem;
-
       left: -2.72rem;
-
       width: 0.9rem;
-
       height: 0.9rem;
-
       border-radius: 999px;
-
       border: 1px solid rgba(255, 255, 255, 0.92);
-
       background: rgba(160, 151, 141, 0.56);
-
       box-shadow: 0 0 0 6px rgba(143, 123, 102, 0.08);
-
       transition: background-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
-
     }
-
-
 
     .timeline-card {
-
       border-radius: 1.6rem;
-
       border: 1px solid rgba(255, 255, 255, 0.72);
-
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.4));
-
       box-shadow: 0 24px 60px rgba(63, 51, 37, 0.08);
-
       backdrop-filter: blur(18px);
-
       transform-origin: center center;
-
       transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease, border-color 0.28s ease;
-
       will-change: transform;
-
     }
-
-
 
     .timeline-item:hover .timeline-card {
-
       transform: translateY(-8px) rotateX(5deg) rotateY(-2deg);
-
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(244, 239, 233, 0.6));
-
       box-shadow: 0 30px 72px rgba(63, 51, 37, 0.14);
-
       border-color: rgba(152, 125, 94, 0.26);
-
     }
-
-
 
     .timeline-item:hover .timeline-node,
-
     .timeline-item.active .timeline-node {
-
       background: rgba(95, 72, 53, 0.92);
-
       box-shadow: 0 0 0 8px rgba(95, 72, 53, 0.1);
-
       transform: scale(1.04);
-
     }
-
-
 
         .gallery-section {
-
       background: #111111;
-
       position: relative;
-
       overflow: hidden;
-
       border-top: 1px solid rgba(255, 255, 255, 0.05);
-
     }
-
-
 
     .gallery-container {
-
       width: 100%;
-
       overflow-x: auto;
-
       overflow-y: hidden;
-
       scroll-snap-type: x mandatory;
-
       scrollbar-width: none;
-
       -webkit-overflow-scrolling: touch;
-
       overscroll-behavior-x: auto;
-
       padding-bottom: 3rem;
-
       cursor: grab;
-
       scroll-behavior: smooth;
-
     }
-
-
 
     .gallery-container:active {
-
       cursor: grabbing;
-
     }
-
-
 
     .gallery-container::-webkit-scrollbar {
-
       display: none;
-
     }
-
-
 
     .gallery-track {
-
       display: inline-flex;
-
       gap: 3rem;
-
       padding: 0 calc(50vw - 32rem);
-
       min-width: min-content;
-
     }
 
-    @keyframes morphAvatar {
-      0%, 100% {
-        border-radius: 56% 44% 62% 38% / 41% 61% 39% 59%;
-        transform: translateY(0px) scale(1);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    @media (max-width: 1024px) {
+      .gallery-track {
+        padding: 0 1.5rem;
+        gap: 1.5rem;
       }
-      50% {
-        border-radius: 43% 57% 36% 64% / 53% 38% 62% 47%;
-        transform: translateY(-16px) scale(1.03);
-        box-shadow: 0 40px 70px rgba(0,0,0,0.25);
-      }
-    }
-
       .gallery-track::after {
         content: '';
         padding-right: 1.5rem;
       }
-    }
-
-    
-    .gallery-section { overflow: hidden; }
-
-    .gallery-container {
-      position: relative;
-      width: 100vw;
-      margin-left: 50%;
-      transform: translateX(-50%);
-      padding-top: 2rem;
-      padding-bottom: 4rem;
-    }
-
-    .gallery-track {
-      display: flex;
-      gap: 2rem;
-      padding: 0 max(2rem, calc(50vw - 32rem));
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    .gallery-track::-webkit-scrollbar { display: none; }
-
-    
-    @media (max-width: 1024px) {
-      .gallery-track { padding: 0 1.5rem; }
-      .gallery-track::after { content: ''; padding-right: 1.5rem; }
     }
 
     .gallery-item {
@@ -864,7 +687,11 @@
       }
 
       .timeline-shell {
+        max-height: calc(100dvh - 10rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
         padding-right: 1rem;
+        scrollbar-width: none;
       }
       
       .timeline-shell::-webkit-scrollbar {
@@ -1114,7 +941,7 @@
         </div>
       </section>
 
-            <section id="products" class="gallery-section bg-black py-24 px-0">
+            <section id="products" class="gallery-section py-24 px-0">
         <div class="mx-auto max-w-6xl flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end px-6 mb-12">
           <div>
             <p class="section-kicker mb-3 text-stone-400">Products</p>
@@ -1323,56 +1150,55 @@
         <div class="mx-auto max-w-6xl relative z-10">
           <p class="section-kicker mb-6">Contact</p>
           
-          <div class="grid grid-cols-1 lg:grid-cols-[1fr_45%] gap-12 lg:gap-24 items-start w-full">
-              <!-- Wrapping text on the left -->
-              <div class="pt-2">
-                <div>
-                  <h2 class="font-display text-[clamp(3.5rem,6.5vw,7.5rem)] leading-[0.9] text-stone-900 mb-8 tracking-tight">
-                    If the tone fits,<br />
-                    <span class="italic text-stone-500 font-light pr-4">the conversation</span><br />
-                    can start here.
-                  </h2>
-
-                  <p class="text-xl sm:text-2xl leading-relaxed text-stone-600 mb-16 max-w-xl">
-                    This portfolio is an evolving playground. If you see a product worth discussing, a minimal idea worth elaborating, or a collaboration worth trying, drop me note.
-                  </p>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-12 sm:gap-24 mt-4 lg:mt-8">
+          <div class="relative w-full">
+            <!-- Form floated right on large screens -->
+            <div class="lg:w-[45%] lg:float-right lg:ml-16 lg:mb-12 mb-16 relative animate-float-form">
+              <div class="absolute -inset-2 bg-gradient-to-tr from-stone-300 to-white rounded-3xl blur-lg opacity-40"></div>
+              <div class="contact-card p-8 sm:p-10 relative">
+                <form id="contactForm" class="space-y-6">
                   <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-stone-400 mb-4">Mail</p>
-                    <a href="mailto:contact@daytoy.online" class="block text-xl font-display text-stone-900 hover:text-stone-500 hover:-translate-y-1 transition-all duration-300">contact@daytoy.online</a>
+                    <label class="mb-2 block text-sm font-medium text-stone-700">Name</label>
+                    <input type="text" name="name" required placeholder="Your name" class="contact-input w-full rounded-2xl px-5 py-4 text-stone-900" />
                   </div>
                   <div>
-                    <p class="text-xs uppercase tracking-[0.2em] text-stone-400 mb-4">Network</p>
-                    <a href="https://github.com/TANGJIE-0212" target="_blank" rel="noopener" class="block text-xl font-display text-stone-900 hover:text-stone-500 hover:-translate-y-1 transition-all duration-300">GitHub / TANGJIE-0212</a>
+                    <label class="mb-2 block text-sm font-medium text-stone-700">Email</label>
+                    <input type="email" name="email" required placeholder="you@example.com" class="contact-input w-full rounded-2xl px-5 py-4 text-stone-900" />
                   </div>
-                </div>
+                  <div>
+                    <label class="mb-2 block text-sm font-medium text-stone-700">Message</label>
+                    <textarea name="message" required rows="5" placeholder="What's on your mind?" class="contact-input w-full resize-none rounded-2xl px-5 py-4 text-stone-900"></textarea>
+                  </div>
+                  <button type="submit" id="submitBtn" class="cta-primary w-full rounded-full py-4 text-lg font-medium tracking-wide disabled:cursor-not-allowed disabled:opacity-50 shadow-xl shadow-stone-900/10">Send message</button>
+                  <p id="formStatus" class="hidden text-center text-sm mt-4"></p>
+                </form>
               </div>
+            </div>
 
-              <!-- Form on the right -->
-              <div class="relative animate-float-form lg:mt-6">
-                <div class="absolute -inset-2 bg-gradient-to-tr from-stone-300 to-white rounded-3xl blur-lg opacity-40"></div>
-                <div class="contact-card p-8 sm:p-10 relative">
-                  <form id="contactForm" class="space-y-6">
-                    <div>
-                      <label class="mb-2 block text-sm font-medium text-stone-700">Name</label>
-                      <input type="text" name="name" required placeholder="Your name" class="contact-input w-full rounded-2xl px-5 py-4 text-stone-900" />
-                    </div>
-                    <div>
-                      <label class="mb-2 block text-sm font-medium text-stone-700">Email</label>
-                      <input type="email" name="email" required placeholder="you@example.com" class="contact-input w-full rounded-2xl px-5 py-4 text-stone-900" />
-                    </div>
-                    <div>
-                      <label class="mb-2 block text-sm font-medium text-stone-700">Message</label>
-                      <textarea name="message" required rows="5" placeholder="What's on your mind?" class="contact-input w-full resize-none rounded-2xl px-5 py-4 text-stone-900"></textarea>
-                    </div>
-                    <button type="submit" id="submitBtn" class="cta-primary w-full rounded-full py-4 text-lg font-medium tracking-wide disabled:cursor-not-allowed disabled:opacity-50 shadow-xl shadow-stone-900/10">Send message</button>
-                    <p id="formStatus" class="hidden text-center text-sm mt-4"></p>
-                  </form>
+            <!-- Wrapping text -->
+            <div class="pt-2">
+              <h2 class="font-display text-[clamp(3.5rem,6.5vw,7.5rem)] leading-[0.9] text-stone-900 mb-10 tracking-tight">
+                If the tone fits,<br />
+                <span class="italic text-stone-500 font-light pr-4">the conversation</span><br />
+                can start here.
+              </h2>
+              
+              <p class="text-xl sm:text-2xl leading-relaxed text-stone-600 mb-16 max-w-2xl">
+                This portfolio is an evolving playground. If you see a product worth discussing, a minimal idea worth elaborating, or a collaboration worth trying, drop me note. 
+              </p>
+
+              <div class="flex flex-col sm:flex-row gap-12 sm:gap-24 mb-16 lg:mb-0">
+                <div>
+                  <p class="text-xs uppercase tracking-[0.2em] text-stone-400 mb-4">Mail</p>
+                  <a href="mailto:contact@daytoy.online" class="block text-2xl font-display text-stone-900 hover:text-stone-500 hover:-translate-y-1 transition-all duration-300">contact@daytoy.online</a>
+                </div>
+                <div>
+                  <p class="text-xs uppercase tracking-[0.2em] text-stone-400 mb-4">Network</p>
+                  <a href="https://github.com/TANGJIE-0212" target="_blank" rel="noopener" class="block text-2xl font-display text-stone-900 hover:text-stone-500 hover:-translate-y-1 transition-all duration-300">GitHub / TANGJIE-0212</a>
                 </div>
               </div>
             </div>
+            <div class="clear-both"></div>
+          </div>
         </div>
       </section>
     </main>
@@ -1395,11 +1221,11 @@
     const journeySection = document.getElementById('journey');
     const timelineShell = document.getElementById('timelineShell');
     const timelineItems = Array.from(document.querySelectorAll('.timeline-item'));
-    const galleryContainer = document.getElementById('galleryTrack'); // FIX: Target the actual scroll track
+    const galleryContainer = document.getElementById('galleryContainer');
     const galleryItems = Array.from(document.querySelectorAll('.gallery-item'));
     
     function useJourneyInnerScroll() {
-      return false;
+      return window.innerWidth > 1024;
     }
 
     function updateTimelinePerspective() {
