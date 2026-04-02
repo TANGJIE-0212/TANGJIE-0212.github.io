@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 论文雷达 — 每周精选论文</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-elevated: #111111;
+            --bg-card: #161616;
+            --bg-card-hover: #1a1a1a;
+            --ink: #f0f0f0;
+            --ink-secondary: #a0a0a0;
+            --ink-muted: #666666;
+            --border: rgba(255,255,255,0.08);
+            --border-hover: rgba(255,255,255,0.15);
+            --accent: #c8a2ff;
+            --accent-soft: rgba(200,162,255,0.08);
+            --accent-green: #7ee8a8;
+            --accent-amber: #f0c674;
+            --accent-rose: #f0a0b8;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --ease: cubic-bezier(0.25,0.46,0.45,0.94);
+            --max-w: 1200px;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        ::selection {
+            background: rgba(200,162,255,0.3);
+            color: #fff;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        /* ===== NAV ===== */
+        .topnav {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topnav-inner {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 32px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topnav-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topnav-brand .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: inline-block;
+        }
+
+        .topnav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .topnav-tabs button {
+            background: none;
+            border: 1px solid transparent;
+            color: var(--ink-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 7px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.2s var(--ease);
+            font-family: inherit;
+        }
+
+        .topnav-tabs button:hover { color: var(--ink); }
+
+        .topnav-tabs button.active {
+            color: var(--ink);
+            background: rgba(255,255,255,0.06);
+            border-color: var(--border);
+        }
+
+        .topnav-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-switch {
+            display: inline-flex;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .lang-switch button {
+            border: none;
+            background: none;
+            color: var(--ink-muted);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.2s var(--ease);
+            font-family: inherit;
+        }
+
+        .lang-switch button.active {
+            background: rgba(255,255,255,0.08);
+            color: var(--ink);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 80px 32px 60px;
+        }
+
+        .hero-kicker {
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 .line2 {
+            display: block;
+            color: var(--ink-secondary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--ink-secondary);
+            max-width: 640px;
+            font-weight: 300;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .meta-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            font-size: 0.82rem;
+            color: var(--ink-secondary);
+            font-weight: 400;
+        }
+
+        .meta-tag .num {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        /* ===== SECTION COMMON ===== */
+        .section {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 32px 80px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--ink-muted);
+            font-weight: 600;
+        }
+
+        /* ===== DIMENSION PILLS (horizontal filter) ===== */
+        .dim-filter {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+
+        .dim-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--ink-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s var(--ease);
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .dim-pill:hover {
+            border-color: var(--border-hover);
+            color: var(--ink);
+        }
+
+        .dim-pill.active {
+            background: rgba(255,255,255,0.06);
+            border-color: var(--border-hover);
+            color: var(--ink);
+        }
+
+        .dim-pill .cnt {
+            font-size: 0.75rem;
+            color: var(--ink-muted);
+            font-weight: 400;
+        }
+
+        /* ===== PAPER CARDS ===== */
+        .papers-list { display: grid; gap: 16px; }
+
+        .paper-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 30px;
+            transition: all 0.3s var(--ease);
+            position: relative;
+        }
+
+        .paper-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .paper-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .paper-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.4;
+            letter-spacing: -0.02em;
+            flex: 1;
+        }
+
+        .paper-title a {
+            transition: color 0.2s;
+        }
+
+        .paper-title a:hover { color: var(--accent); }
+
+        .paper-dim-badge {
+            flex-shrink: 0;
+            font-size: 0.78rem;
+            color: var(--ink-secondary);
+            padding: 5px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .paper-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .p-likes {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.82rem;
+            color: var(--accent-rose);
+            font-weight: 500;
+        }
+
+        .p-date {
+            font-size: 0.82rem;
+            color: var(--ink-muted);
+        }
+
+        .p-org {
+            font-size: 0.75rem;
+            color: var(--accent);
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            font-weight: 500;
+        }
+
+        .p-github {
+            font-size: 0.82rem;
+            color: var(--ink-secondary);
+            transition: color 0.2s;
+        }
+
+        .p-github:hover { color: var(--ink); }
+
+        .paper-blocks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .info-block {
+            padding: 16px 18px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .info-block.tech { background: rgba(200,162,255,0.04); border-color: rgba(200,162,255,0.12); }
+        .info-block.capability { background: rgba(126,232,168,0.04); border-color: rgba(126,232,168,0.10); }
+        .info-block.product { background: rgba(240,198,116,0.04); border-color: rgba(240,198,116,0.10); }
+
+        .block-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .block-content {
+            font-size: 0.9rem;
+            line-height: 1.65;
+            color: var(--ink-secondary);
+        }
+
+        /* ===== DIMENSION SECTION DIVIDER ===== */
+        .dim-section {
+            margin-top: 48px;
+            margin-bottom: 24px;
+        }
+
+        .dim-section:first-child { margin-top: 0; }
+
+        .dim-section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .dim-section-title .sc {
+            font-size: 0.85rem;
+            color: var(--ink-muted);
+            font-weight: 400;
+        }
+
+        /* ===== OPPORTUNITIES ===== */
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .strat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: all 0.3s var(--ease);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .strat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+        }
+
+        .strat-card.cashcow::before { background: linear-gradient(90deg, var(--accent-green), transparent); }
+        .strat-card.efficiency::before { background: linear-gradient(90deg, var(--accent-amber), transparent); }
+        .strat-card.blueocean::before { background: linear-gradient(90deg, var(--accent), transparent); }
+        .strat-card.special::before { background: linear-gradient(90deg, var(--accent-rose), transparent); }
+
+        .strat-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .strat-card h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .strat-obs {
+            font-size: 0.85rem;
+            color: var(--ink-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .strat-action {
+            font-size: 0.88rem;
+            line-height: 1.65;
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            color: var(--ink-secondary);
+        }
+
+        .strat-action strong {
+            display: block;
+            color: var(--ink);
+            margin-bottom: 6px;
+            font-size: 0.82rem;
+        }
+
+        .strat-papers {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .strat-papers-label {
+            font-size: 0.72rem;
+            color: var(--ink-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .strat-paper-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .sp-link {
+            font-size: 0.78rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            color: var(--ink-secondary);
+            transition: all 0.2s;
+        }
+
+        .sp-link:hover {
+            background: rgba(255,255,255,0.08);
+            color: var(--ink);
+            border-color: var(--border-hover);
+        }
+
+        /* ===== NEW PRODUCTS ===== */
+        .np-list { display: grid; gap: 16px; }
+
+        .np-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.3s var(--ease);
+        }
+
+        .np-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .np-header {
+            padding: 20px 26px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .np-header h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .np-body { padding: 24px 26px; }
+
+        .np-desc {
+            font-size: 0.92rem;
+            line-height: 1.7;
+            color: var(--ink-secondary);
+            margin-bottom: 18px;
+        }
+
+        .np-scenes { margin-bottom: 18px; }
+
+        .np-scenes-label {
+            font-size: 0.72rem;
+            color: var(--ink-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .np-scene-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: rgba(126,232,168,0.08);
+            color: var(--accent-green);
+            font-size: 0.82rem;
+            font-weight: 500;
+            margin: 3px 6px 3px 0;
+        }
+
+        /* ===== RADAR + TIMELINE ===== */
+        .radar-tl-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .radar-wrap {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 28px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+
+        .analysis-box {
+            margin-top: 28px;
+            padding: 22px 24px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+
+        .analysis-box h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 14px;
+        }
+
+        .analysis-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .analysis-box li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: var(--ink-secondary);
+            line-height: 1.6;
+        }
+
+        .analysis-box li:last-child { border-bottom: none; }
+        .analysis-box li strong { color: var(--ink); }
+
+        .timeline { position: relative; }
+
+        .tl-item {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .tl-date {
+            width: 110px;
+            flex-shrink: 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--accent);
+            padding-top: 4px;
+        }
+
+        .tl-body {
+            flex: 1;
+            padding-left: 24px;
+            border-left: 1px solid var(--border);
+            position: relative;
+        }
+
+        .tl-body::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 6px;
+            width: 9px;
+            height: 9px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid var(--bg);
+        }
+
+        .tl-papers { display: grid; gap: 10px; }
+
+        .tl-paper {
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            transition: all 0.2s var(--ease);
+        }
+
+        .tl-paper:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
+        }
+
+        .tl-paper-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .tl-paper-title a:hover { color: var(--accent); }
+
+        .tl-paper-dim {
+            display: inline-block;
+            font-size: 0.78rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        /* ===== VIEWS ===== */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 40px 32px 60px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            font-size: 0.82rem;
+            color: var(--ink-muted);
+        }
+
+        .footer-right {
+            font-size: 0.78rem;
+            color: var(--ink-muted);
+        }
+
+        /* ===== REVEAL ANIMATION ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .hero { padding: 60px 20px 40px; }
+            .section { padding: 0 20px 60px; }
+            .topnav-inner { padding: 0 16px; }
+            .radar-tl-grid {
+                grid-template-columns: 1fr;
+            }
+            .topnav-tabs { display: none; }
+            .mobile-tabs {
+                display: flex !important;
+                overflow-x: auto;
+                gap: 6px;
+                padding: 12px 20px;
+                border-bottom: 1px solid var(--border);
+            }
+        }
+
+        @media (min-width: 901px) {
+            .mobile-tabs { display: none !important; }
+        }
+
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 2.4rem; }
+            .paper-card { padding: 20px; }
+            .paper-blocks { grid-template-columns: 1fr; }
+            .strategy-grid { grid-template-columns: 1fr; }
+            .site-footer { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="topnav">
+        <div class="topnav-inner">
+            <div class="topnav-brand">
+                <span class="dot"></span> AI PAPER RADAR
+            </div>
+            <div class="topnav-tabs">
+                <button id="tabPapers" class="active" onclick="showView('papers')">Top论文解读</button>
+                <button id="tabOpportunities" onclick="showView('opportunities')">产品机会</button>
+            </div>
+            <div class="topnav-right">
+                <div class="lang-switch" role="group" aria-label="Language">
+                    <button id="langZh" class="active" onclick="setLanguage('zh')">中文</button>
+                    <button id="langEn" onclick="setLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile tabs -->
+    <div class="mobile-tabs" style="display:none;">
+        <button class="dim-pill active" onclick="showView('papers')">Top论文解读</button>
+        <button class="dim-pill" onclick="showView('opportunities')">产品机会</button>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-kicker" id="heroKicker">每周情报 · 产品视角 · AI 前沿</div>
+        <h1 id="heroTitle">AI 论文雷达<span class="line2" id="heroLine2">每周精选，产品视角解读</span></h1>
+        <p class="hero-subtitle" id="heroSubtitle">追踪真正值得花时间理解的 AI 论文，把技术热点整理成更清晰的产品判断、能力地图和机会线索。</p>
+        <div class="hero-meta">
+            <span class="meta-tag" id="headerInfo">Hugging Face Weekly Papers</span>
+            <span class="meta-tag" id="paperCount"><span class="num">0</span> 篇论文</span>
+            <span class="meta-tag" id="dimensionCount"><span class="num">0</span> 个活跃维度</span>
+        </div>
+    </section>
+
+    <!-- PAPERS VIEW -->
+    <div id="papers" class="view active">
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title" id="papersSectionTitle">论文列表</h2>
+                <span class="section-label" id="papersWeekLabel"></span>
+            </div>
+            <div class="dim-filter" id="dimFilter"></div>
+            <div class="papers-list" id="papersGrid"></div>
+        </section>
+    </div>
+
+    <!-- OPPORTUNITIES VIEW -->
+    <div id="opportunities" class="view">
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title" id="opportunitiesTitle">产品机会板</h2>
+                <span class="section-label">OPPORTUNITIES</span>
+            </div>
+            <p id="opportunitiesIntro" style="color: var(--ink-secondary); margin-bottom: 48px; font-size: 1rem; line-height: 1.7; max-width: 640px;">基于本周热门论文，结合现有市面上最新的产品和技术，解读未来半年内的产品机会</p>
+
+            <h3 id="strategySectionTitle" style="font-family:'Space Grotesk',sans-serif; font-size:1.15rem; margin-bottom:24px; font-weight:600; letter-spacing:-0.02em;">🎯 战略级判断</h3>
+            <div class="strategy-grid" id="strategyCards"></div>
+
+            <h3 id="newProductSectionTitle" style="font-family:'Space Grotesk',sans-serif; font-size:1.15rem; margin-top:56px; margin-bottom:24px; font-weight:600; letter-spacing:-0.02em;">🆕 新产品形态机会</h3>
+            <div class="np-list" id="newProducts"></div>
+        </section>
+    </div>
+
+
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-left">AI PAPER RADAR &copy; 2026</div>
+        <div class="footer-right">Data: Hugging Face · Updated weekly</div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script>
+        const UI_TEXT = {
+            zh: {
+                pageTitle: 'AI 论文雷达 — 每周精选论文',
+                heroKicker: '每周情报 · 产品视角 · AI 前沿',
+                heroTitleLine1: 'AI 论文雷达',
+                heroTitleLine2: '每周精选，产品视角解读',
+                heroSubtitle: '追踪真正值得花时间理解的 AI 论文，把技术热点整理成更清晰的产品判断、能力地图和机会线索。',
+                sourceLabel: '数据来源',
+                papersCount: '篇论文',
+                activeDimensions: '个活跃维度',
+                tabs: { papers: 'Top论文解读', opportunities: '产品机会' },
+                papersSectionTitle: 'Top论文解读',
+                allDimension: '全部',
+                opportunitiesTitle: '产品机会板',
+                opportunitiesIntro: '基于本周热门论文，结合现有市面上最新的产品和技术，解读未来半年内的产品机会',
+                strategySectionTitle: '🎯 战略级判断',
+                newProductSectionTitle: '🆕 新产品形态机会',
+                radarSectionTitle: '能力维度 & 时间线',
+                analysisTitle: '维度分析',
+                timelineTitle: '时间线',
+                blocks: { tech: '🔧 核心技术', value: '💎 应用价值', pm: '🎯 PM 建议' },
+                labels: {
+                    github: 'GitHub',
+                    relatedPapers: '相关论文',
+                    actionAdvice: '💡 行动建议',
+                    applicableScenes: '适用场景',
+                    noStrategy: '暂无战略总结',
+                    noProducts: '暂无新产品形态机会',
+                    paperCountDataset: '论文数量',
+                    countSuffix: '篇'
+                },
+                dimensions: {
+                    understanding: '理解与记忆', action: '行动能力', multimodal: '多模态',
+                    efficiency: '效率与成本', safety: '可靠性与安全', robotics: '机器人/具身智能'
+                }
+            },
+            en: {
+                pageTitle: 'AI Paper Radar — Weekly Selected Papers',
+                heroKicker: 'Weekly intelligence · Product lens · AI frontier',
+                heroTitleLine1: 'AI Paper Radar',
+                heroTitleLine2: 'Weekly picks, product-lens analysis',
+                heroSubtitle: 'Track the AI papers actually worth your time and turn research heat into clearer product judgments, capability maps, and opportunity signals.',
+                sourceLabel: 'Source',
+                papersCount: 'papers',
+                activeDimensions: 'active dimensions',
+                tabs: { papers: 'Top Papers', opportunities: 'Opportunities' },
+                papersSectionTitle: 'Top Papers',
+                allDimension: 'All',
+                opportunitiesTitle: 'Opportunity Board',
+                opportunitiesIntro: "Read the next six months of product opportunities through this week's most relevant papers and the current market landscape.",
+                strategySectionTitle: '🎯 Strategic Calls',
+                newProductSectionTitle: '🆕 New Product Shapes',
+                radarSectionTitle: 'Dimensions & Timeline',
+                analysisTitle: 'Dimension Analysis',
+                timelineTitle: 'Timeline',
+                blocks: { tech: '🔧 Core Idea', value: '💎 Product Value', pm: '🎯 PM Take' },
+                labels: {
+                    github: 'GitHub',
+                    relatedPapers: 'Related Papers',
+                    actionAdvice: '💡 Action',
+                    applicableScenes: 'Use Cases',
+                    noStrategy: 'No strategic summary yet',
+                    noProducts: 'No new product concepts yet',
+                    paperCountDataset: 'Paper Count',
+                    countSuffix: ''
+                },
+                dimensions: {
+                    understanding: 'Understanding & Memory', action: 'Action Capability', multimodal: 'Multimodal',
+                    efficiency: 'Efficiency & Cost', safety: 'Reliability & Safety', robotics: 'Robotics & Embodied AI'
+                }
+            }
+        };
+
+        let currentLang = 'zh';
+        let currentDimFilter = null;
+
+        function t(path) {
+            return path.split('.').reduce((a, k) => a && a[k], UI_TEXT[currentLang]) || '';
+        }
+
+        function dimName(key, fallback) {
+            return UI_TEXT[currentLang].dimensions[key] || fallback || key;
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+            document.title = t('pageTitle');
+            document.getElementById('langZh').classList.toggle('active', lang === 'zh');
+            document.getElementById('langEn').classList.toggle('active', lang === 'en');
+            initPage();
+        }
+
+        // ===== VIEW =====
+        function showView(name) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(name).classList.add('active');
+            document.querySelectorAll('.topnav-tabs button').forEach(b => b.classList.remove('active'));
+            const tabBtn = document.getElementById('tab' + name.charAt(0).toUpperCase() + name.slice(1));
+            if (tabBtn) tabBtn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', initPage);
+
+        function initPage() {
+            const dimCounts = {};
+            Object.keys(PAPER_DATA.dimensions).forEach(d => dimCounts[d] = 0);
+            PAPER_DATA.papers.forEach(p => { if (dimCounts[p.dimension] !== undefined) dimCounts[p.dimension]++; });
+            const activeDims = Object.values(dimCounts).filter(c => c > 0).length;
+
+            // Static text
+            document.getElementById('heroKicker').textContent = t('heroKicker');
+            document.getElementById('heroTitle').innerHTML = `${t('heroTitleLine1')}<span class="line2" id="heroLine2">${t('heroTitleLine2')}</span>`;
+            document.getElementById('heroSubtitle').textContent = t('heroSubtitle');
+            document.getElementById('headerInfo').innerHTML = `${t('sourceLabel')}: Hugging Face · ${PAPER_DATA.dateRange}`;
+            document.getElementById('paperCount').innerHTML = `<span class="num">${PAPER_DATA.papers.length}</span> ${t('papersCount')}`;
+            document.getElementById('dimensionCount').innerHTML = `<span class="num">${activeDims}</span> ${t('activeDimensions')}`;
+
+            // Tabs text
+            document.getElementById('tabPapers').textContent = t('tabs.papers');
+            document.getElementById('tabOpportunities').textContent = t('tabs.opportunities');
+
+            document.getElementById('papersSectionTitle').textContent = t('papersSectionTitle');
+            document.getElementById('papersWeekLabel').textContent = PAPER_DATA.week;
+            document.getElementById('opportunitiesTitle').textContent = t('opportunitiesTitle');
+            document.getElementById('opportunitiesIntro').textContent = t('opportunitiesIntro');
+            document.getElementById('strategySectionTitle').textContent = t('strategySectionTitle');
+            document.getElementById('newProductSectionTitle').textContent = t('newProductSectionTitle');
+
+            renderDimFilter(dimCounts);
+            renderPapers(dimCounts);
+            renderStrategyCards();
+            renderNewProducts();
+            revealInit();
+        }
+
+        // ===== DIM FILTER =====
+        function renderDimFilter(dimCounts) {
+            const el = document.getElementById('dimFilter');
+            const total = PAPER_DATA.papers.length;
+            let html = `<button class="dim-pill ${!currentDimFilter ? 'active' : ''}" onclick="filterDim(null)">${t('allDimension')} <span class="cnt">${total}</span></button>`;
+            Object.entries(PAPER_DATA.dimensions).forEach(([key, dim]) => {
+                if (!dimCounts[key]) return;
+                html += `<button class="dim-pill ${currentDimFilter === key ? 'active' : ''}" onclick="filterDim('${key}')">${dim.icon} ${dimName(key, dim.name)} <span class="cnt">${dimCounts[key]}</span></button>`;
+            });
+            el.innerHTML = html;
+        }
+
+        function filterDim(dim) {
+            currentDimFilter = dim;
+            const dimCounts = {};
+            Object.keys(PAPER_DATA.dimensions).forEach(d => dimCounts[d] = 0);
+            PAPER_DATA.papers.forEach(p => { if (dimCounts[p.dimension] !== undefined) dimCounts[p.dimension]++; });
+            renderDimFilter(dimCounts);
+            renderPapers(dimCounts);
+            revealInit();
+        }
+
+        // ===== PAPERS =====
+        function renderPapers(dimCounts) {
+            const grid = document.getElementById('papersGrid');
+            const dimOrder = Object.keys(PAPER_DATA.dimensions);
+            let html = '';
+
+            dimOrder.forEach(dk => {
+                if (currentDimFilter && currentDimFilter !== dk) return;
+                const dim = PAPER_DATA.dimensions[dk];
+                const papers = PAPER_DATA.papers.filter(p => p.dimension === dk);
+                if (!papers.length) return;
+
+                html += `<div class="dim-section"><h3 class="dim-section-title">${dim.icon} ${dimName(dk, dim.name)} <span class="sc">(${papers.length})</span></h3></div>`;
+
+                papers.forEach(p => {
+                    html += `
+                    <div class="paper-card reveal" id="paper-${p.id}">
+                        <div class="paper-top">
+                            <h3 class="paper-title"><a href="${p.url}" target="_blank" rel="noopener">${p.title}</a></h3>
+                            <span class="paper-dim-badge">${dim.icon} ${dimName(dk, dim.name)}</span>
+                        </div>
+                        <div class="paper-meta-row">
+                            <span class="p-likes">♥ ${p.likes}</span>
+                            ${p.org_tag ? `<span class="p-org">${p.org_tag}</span>` : ''}
+                            ${p.github_url ? `<a href="${p.github_url}" target="_blank" rel="noopener" class="p-github">📦 ${t('labels.github')}</a>` : ''}
+                            <span class="p-date">${p.published_date || p.date}</span>
+                        </div>
+                        <div class="paper-blocks">
+                            <div class="info-block tech">
+                                <div class="block-label">${t('blocks.tech')}</div>
+                                <div class="block-content">${p.tech_core || p.abstract}</div>
+                            </div>
+                            <div class="info-block capability">
+                                <div class="block-label">${t('blocks.value')}</div>
+                                <div class="block-content">${p.value || '—'}</div>
+                            </div>
+                            <div class="info-block product">
+                                <div class="block-label">${t('blocks.pm')}</div>
+                                <div class="block-content">${p.pm_suggestion || '—'}</div>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+            });
+
+            grid.innerHTML = html;
+        }
+
+        // ===== RADAR CHART =====
+        let radarChart = null;
+
+        function renderRadarChart(dimCounts) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            const labels = Object.entries(PAPER_DATA.dimensions).map(([k, d]) => `${d.icon} ${dimName(k, d.name)}`);
+            const data = Object.keys(PAPER_DATA.dimensions).map(k => dimCounts[k] || 0);
+
+            if (radarChart) radarChart.destroy();
+
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: t('labels.paperCountDataset'),
+                        data,
+                        fill: true,
+                        backgroundColor: 'rgba(200,162,255,0.12)',
+                        borderColor: 'rgba(200,162,255,0.6)',
+                        pointBackgroundColor: 'rgba(200,162,255,0.8)',
+                        pointBorderColor: '#0a0a0a',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(200,162,255,0.8)',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    elements: { line: { borderWidth: 2 } },
+                    scales: {
+                        r: {
+                            angleLines: { display: true, color: 'rgba(255,255,255,0.06)' },
+                            grid: { color: 'rgba(255,255,255,0.06)' },
+                            pointLabels: { color: '#a0a0a0', font: { size: 12 } },
+                            suggestedMin: 0,
+                            suggestedMax: Math.max(...data) + 2,
+                            ticks: { stepSize: 1, color: '#666', backdropColor: 'transparent' }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // ===== DIMENSION ANALYSIS =====
+        function renderDimensionAnalysis(dimCounts) {
+            const list = document.getElementById('dimensionAnalysis');
+            list.innerHTML = Object.entries(PAPER_DATA.dimensions).map(([k, dim]) => {
+                const c = dimCounts[k] || 0;
+                return `<li><strong>${dim.icon} ${dimName(k, dim.name)} (${c}${t('labels.countSuffix')})</strong> — ${dim.keywords ? dim.keywords.slice(0, 5).join(', ') : ''}</li>`;
+            }).join('');
+        }
+
+        // ===== TIMELINE =====
+        function renderTimeline() {
+            const container = document.getElementById('timelineContainer');
+            const byDate = {};
+            PAPER_DATA.papers.forEach(p => {
+                const d = p.published_date || p.date;
+                if (!byDate[d]) byDate[d] = [];
+                byDate[d].push(p);
+            });
+
+            const sorted = Object.keys(byDate).sort((a, b) => {
+                const pd = s => new Date(`${s}, 2026`);
+                return pd(b) - pd(a);
+            });
+
+            container.innerHTML = sorted.map(date => `
+                <div class="tl-item">
+                    <div class="tl-date">${date}</div>
+                    <div class="tl-body">
+                        <div class="tl-papers">
+                            ${byDate[date].map(p => {
+                                const dim = PAPER_DATA.dimensions[p.dimension] || { icon: '📄', name: '' };
+                                return `
+                                    <div class="tl-paper reveal">
+                                        <div class="tl-paper-title"><a href="${p.url}" target="_blank" rel="noopener">${p.title}</a></div>
+                                        <span class="tl-paper-dim">${dim.icon} ${dimName(p.dimension, dim.name)}</span>
+                                    </div>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===== STRATEGY CARDS =====
+        function renderStrategyCards() {
+            const container = document.getElementById('strategyCards');
+            const strategies = (PAPER_DATA.opportunities?.strategies || []).slice(0, 3);
+
+            if (!strategies.length) {
+                container.innerHTML = `<p style="color:var(--ink-muted)">${t('labels.noStrategy')}</p>`;
+                return;
+            }
+
+            container.innerHTML = strategies.map(s => {
+                let ph = '';
+                if (s.relatedPapers?.length) {
+                    const links = s.relatedPapers.map(id => {
+                        const p = PAPER_DATA.papers.find(x => x.id === id);
+                        if (!p) return '';
+                        const sn = p.title.length > 28 ? p.title.slice(0, 28) + '…' : p.title;
+                        return `<a href="${p.url}" target="_blank" rel="noopener" class="sp-link">${sn}</a>`;
+                    }).filter(Boolean).join('');
+                    if (links) ph = `<div class="strat-papers"><div class="strat-papers-label">${t('labels.relatedPapers')}</div><div class="strat-paper-links">${links}</div></div>`;
+                }
+                return `
+                    <div class="strat-card ${s.type || ''} reveal">
+                        <h4>${s.icon || '🎯'} ${s.title}</h4>
+                        <div class="strat-action"><strong>${t('labels.actionAdvice')}</strong>${s.action}</div>
+                        ${ph}
+                    </div>`;
+            }).join('');
+        }
+
+        // ===== NEW PRODUCTS =====
+        function renderNewProducts() {
+            const container = document.getElementById('newProducts');
+            const products = PAPER_DATA.opportunities?.newProducts || [];
+
+            if (!products.length) {
+                container.innerHTML = `<p style="color:var(--ink-muted)">${t('labels.noProducts')}</p>`;
+                return;
+            }
+
+            container.innerHTML = products.map(np => {
+                const scenes = np.scenes || np.products || [];
+                const sceneHtml = scenes.map(s => `<span class="np-scene-tag">${s}</span>`).join('');
+
+                let ph = '';
+                if (np.relatedPapers?.length) {
+                    const links = np.relatedPapers.slice(0, 4).map(id => {
+                        const p = PAPER_DATA.papers.find(x => x.id === id);
+                        if (!p) return '';
+                        const sn = p.title.length > 24 ? p.title.slice(0, 24) + '…' : p.title;
+                        return `<a href="${p.url}" target="_blank" rel="noopener" class="sp-link">${sn}</a>`;
+                    }).filter(Boolean).join('');
+                    if (links) ph = `<div class="strat-papers"><div class="strat-papers-label">${t('labels.relatedPapers')}</div><div class="strat-paper-links">${links}</div></div>`;
+                }
+
+                return `
+                    <div class="np-card reveal">
+                        <div class="np-header"><h4>${np.icon || '🆕'} ${np.title}</h4></div>
+                        <div class="np-body">
+                            <div class="np-desc">${np.description}</div>
+                            ${sceneHtml ? `<div class="np-scenes"><div class="np-scenes-label">${t('labels.applicableScenes')}</div>${sceneHtml}</div>` : ''}
+                            ${ph}
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        // ===== REVEAL =====
+        function revealInit() {
+            const els = document.querySelectorAll('.reveal:not(.is-visible)');
+            if (!('IntersectionObserver' in window)) { els.forEach(e => e.classList.add('is-visible')); return; }
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); } });
+            }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+            els.forEach((el, i) => { el.style.transitionDelay = `${Math.min(i * 0.03, 0.2)}s`; obs.observe(el); });
+        }
+    </script>
+</body>
+</html>
