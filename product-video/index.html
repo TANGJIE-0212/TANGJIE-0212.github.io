@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>从能生成视频，到能讲清楚一个产品</title>
+  <style>
+    :root{--bg:#080b19;--panel:#141b35;--line:#303c65;--ink:#f0f3ff;--muted:#b0bcd9;--accent:#9fbfff;--warm:#d9b8ff;--gradient:linear-gradient(110deg,#78bdff,#a494ff 55%,#ddb1ff)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:20px}
+    body{margin:0;background:radial-gradient(ellipse at 90% 0, #6e47c329,transparent 48%),radial-gradient(ellipse at 20% 10%,#286bdd24,transparent 50%),var(--bg);background-attachment:fixed;color:var(--ink);font:17px/1.8 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+    a{color:var(--accent);text-underline-offset:5px}a:hover{color:#dccbff}
+    button,.button{font:inherit;font-size:14px;line-height:1.5;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+    button:hover,.button:hover{border-color:var(--accent);color:var(--accent)}
+    button:disabled{opacity:.4;cursor:default}button.primary,.button.primary{background:var(--gradient);color:var(--bg);border-color:#b9b8ff;font-weight:600;box-shadow:0 4px 24px #7564ef25}
+    :focus-visible{outline:3px solid var(--warm);outline-offset:4px}
+    header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 28px;background:#090e20f2;backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+    .brand{font-size:13px;letter-spacing:.12em;color:var(--muted);white-space:nowrap}.brand strong{color:var(--accent)}
+    .controls{display:flex;gap:8px;flex-wrap:wrap}.progress{position:absolute;bottom:-1px;left:0;height:2px;background:var(--gradient);box-shadow:0 0 12px #8c92ff80;width:0;transition:width .2s}
+    .layout{max-width:1500px;margin:auto;display:grid;grid-template-columns:220px minmax(0,1fr);gap:56px;padding:0 40px}
+    aside{position:sticky;top:24px;height:calc(100vh - 48px);overflow:auto;padding-top:24px}
+    aside p{font-size:12px;color:var(--muted);letter-spacing:.1em}nav{display:grid;gap:4px}
+    nav a{color:var(--muted);text-decoration:none;font-size:14px;padding:9px 10px;border-left:2px solid transparent;border-radius:0 5px 5px 0}
+    nav a[aria-current="step"]{color:#d2ddff;background:linear-gradient(90deg,#365bc03b,#8260dc20);border-left-color:var(--accent)}
+    nav small{display:inline-block;width:28px;opacity:.6}.nav-foot{border-top:1px solid var(--line);padding-top:18px;margin-top:25px;font-size:12px;color:var(--muted)}
+    main{min-width:0;max-width:1040px}section{padding:60px 0 66px;border-bottom:1px solid var(--line);scroll-margin-top:20px}
+    .eyebrow{font-size:12px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+    h1{font-size:clamp(38px,4.8vw,65px);line-height:1.24;letter-spacing:-.035em;margin:16px 0 25px;font-weight:650}
+    h1 .accent{color:var(--accent);background:var(--gradient);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    h2{font-size:clamp(29px,3vw,43px);line-height:1.35;letter-spacing:-.025em;margin:10px 0 24px;font-weight:620}
+    h3{font-size:20px;line-height:1.45;margin:0 0 12px}.lead{font-size:22px;line-height:1.75;max-width:850px;color:var(--muted)}
+    p{margin:0 0 18px}strong{color:var(--ink)}.accent{color:var(--accent)}.muted{color:var(--muted)}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0}.tag{font-size:12px;border:1px solid var(--line);border-radius:30px;padding:4px 12px;color:var(--muted)}
+    .quote{border-left:3px solid #a494ff;padding:12px 20px 12px 24px;font-size:24px;line-height:1.7;margin:28px 0;background:linear-gradient(90deg,#8062da18,transparent);border-radius:0 12px 12px 0}
+    .notes{margin:24px 0;padding:23px 27px;background:linear-gradient(130deg,#17213d,#191b36);border:1px solid var(--line);border-radius:12px}
+    .notes-label,.caption{font-size:12px;color:var(--muted)}.notes-label{display:block;letter-spacing:.12em;margin-bottom:12px;color:var(--accent)}
+    .notes p:last-child{margin-bottom:0}.hide-notes .notes{display:none}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .card{padding:24px;border:1px solid var(--line);border-radius:12px;min-width:0;background:linear-gradient(140deg,#17213bc9,#14132b99);box-shadow:inset 0 1px #a7b9ff0d}.card p{font-size:15px;color:var(--muted)}.card p:last-child{margin-bottom:0}
+    .card .num{font-size:12px;color:var(--accent);margin-bottom:14px;display:block}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+    .demo{border:1px solid #414d7c;border-radius:14px;overflow:hidden;margin:25px 0;background:#0d1226;box-shadow:0 16px 50px #03061640}
+    .demo-head{padding:17px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:linear-gradient(110deg,#1b2e54,#28203f)}
+    .demo-head h3{margin:0;font-size:17px}.badge{font-size:11px;color:var(--warm);border:1px solid #64548a;background:#af80ff0a;padding:3px 9px;border-radius:5px}
+    .demo-body{padding:22px}.demo-body p{color:var(--muted);font-size:15px}
+    video{display:block;width:100%;max-height:510px;background:#050713;border-radius:8px;margin:14px 0;aspect-ratio:16/9}
+    video[hidden],#local-productshot[hidden]{display:none}.media-status{font-size:13px;color:var(--warm);min-height:24px;margin:8px 0}
+    video.portrait{width:min(100%,450px);height:auto;max-height:none;aspect-ratio:3/4;margin:18px auto}
+    .tool-figure{margin:24px 0}.tool-figure img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px}.tool-figure figcaption{font-size:13px;color:var(--muted);margin-top:10px}
+    pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#090e20;border:1px solid var(--line);padding:18px;border-radius:10px;font-size:14px;line-height:1.7}code{overflow-wrap:anywhere}
+    .chapter-part{margin-top:40px}summary{cursor:pointer;color:var(--accent);margin:20px 0}
+    .watch{display:flex;gap:8px;flex-wrap:wrap}.watch span{font-size:12px;color:var(--muted);background:var(--panel);padding:5px 10px;border-radius:5px}
+    .notice{font-size:14px;color:var(--warm);border:1px solid #534572;background:#ad78f70a;padding:14px 18px;border-radius:8px;margin:20px 0}
+    .flow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:25px 0}.flow span{padding:10px 15px;border:1px solid var(--line);border-radius:7px}.flow b{color:var(--accent)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:16px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{color:var(--accent);font-weight:500}td{color:var(--muted)}td:first-child{color:var(--ink)}.table-wrap{overflow:auto}
+    ol,ul{padding-left:23px}li{padding-left:3px;margin-bottom:10px}.sources{font-size:14px;word-break:break-word}.sources li{margin-bottom:16px}
+    input[type=file]{font:inherit;font-size:14px;max-width:100%;color:var(--muted)}input::file-selector-button{font:inherit;background:var(--accent);color:var(--bg);border:0;border-radius:6px;padding:9px 13px;margin-right:12px;cursor:pointer}
+    footer{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:32px 0 50px;color:var(--muted);font-size:13px}
+    #page-status{white-space:nowrap;font-variant-numeric:tabular-nums}#toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:8px;z-index:20}
+    .presenting section:not(.active){display:none}.presenting section{min-height:calc(100vh - 180px);padding-top:40px}.presenting .layout{max-width:1600px}
+    @media(max-width:1050px){.layout{grid-template-columns:170px minmax(0,1fr);gap:28px;padding:0 24px}.grid{grid-template-columns:1fr}.brand{display:none}.grid.two{grid-template-columns:1fr}}
+    @media(max-width:700px){body{font-size:16px}header{padding:10px 14px}.controls{gap:6px}button,.button{padding:8px 11px;font-size:13px}.layout{display:block;padding:0 20px}aside{position:static;height:auto;padding:10px 0}aside>p,.nav-foot{display:none}nav{display:flex;overflow:auto;gap:6px}nav a{white-space:nowrap;padding:7px;border-left:0;border-bottom:2px solid transparent}nav a[aria-current="step"]{border-bottom-color:var(--accent)}section{padding:34px 0}.notes{padding:20px}.lead{font-size:19px}.quote{font-size:21px}.presenting section{padding-top:25px}#page-status{font-size:12px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+    @media print{h1 .accent{-webkit-text-fill-color:#222;background:none}.quote,.demo-head,.notice,.badge{background:none}.demo,.card{box-shadow:none}}
+    @media print{html{color-scheme:light}body{background:white;color:#111;font-size:12pt}header,aside,footer,.actions,button,input,video,.media-status,#toast{display:none!important}.layout{display:block;padding:0}main{max-width:none}.presenting section:not(.active),.hide-notes .notes{display:block}section{min-height:0!important;padding:20px 0;break-before:page;border-color:#ccc}section:first-child{break-before:auto}h1{font-size:30pt}h2{font-size:23pt}h3{font-size:15pt}.notes,.card,.demo{background:white;border:1px solid #ccc;break-inside:avoid}.grid,.grid.two{display:block}.card{margin:12px 0}.lead,.muted,.card p,.demo-body p,.caption,.notes-label,td,strong,.quote,.eyebrow,.accent{color:#222}a{color:#15562a}.tag,.badge{color:#444;border-color:#aaa}.quote{font-size:16pt}.notice{color:#654016}.sources a{overflow-wrap:anywhere}}
+  </style>
+</head>
+<body class="presenting">
+  <div class="layout">
+    <aside aria-label="演讲目录">
+      <p>从问题到下一次实验</p>
+      <nav>
+        <a href="#idea"><small>01</small>我们想解决的问题</a>
+        <a href="#remotion"><small>02</small>年初的方案与演示</a>
+        <a href="#seedance"><small>03</small>AI 生视频与它的问题</a>
+        <a href="#recording"><small>04</small>Agent 直接录屏的尝试</a>
+        <a href="#comparison"><small>05</small>三次尝试的优缺点</a>
+        <a href="#hyperframes"><small>06</small>HyperFrames-剪辑工程化</a>
+        <a href="#future"><small>07</small>我们的方案</a>
+        <a href="#gap"><small>08</small>进阶到大师级别</a>
+      </nav>
+    </aside>
+    <main id="main">
+      <section id="idea">
+        <div class="eyebrow">01 / 我们想解决的问题</div>
+        <h1>从能生成视频，<br>到能<span class="accent">讲清楚一个产品。</span></h1>
+        <p class="lead">一个面向独立开发者 / OPC 的产品视频导演：理解产品，讨论故事，再组织拍摄与制作。</p>
+        <div class="tags"><span class="tag">探索分享 · 2026.09</span><span class="tag">先做 30–60 秒 Web 产品介绍</span><span class="tag">Skill → 工具服务 / MCP → Agent</span></div>
+        <p class="muted">这里按 OPC＝一人公司／独立开发者理解。</p>
+        <p>他们通常需要：</p>
+        <div class="grid two">
+          <div class="card"><h3>产品表达能力</h3><p>功能很多，但不知道应该讲什么。</p></div>
+          <div class="card"><h3>宣传片策划能力</h3><p>不知道先讲痛点、效果，还是操作。</p></div>
+          <div class="card"><h3>制作能力</h3><p>不会设计动效、录制、配音和剪辑。</p></div>
+          <div class="card"><h3>持续更新能力</h3><p>产品改版后，旧视频很快过时。</p></div>
+        </div>
+        <p>所以可以这样定义：</p>
+        <blockquote class="quote">给它产品仓库或网站，它先理解产品，提出值得讲的故事，与开发者确认后，自主准备素材、演示产品并制作宣传片；后续还能随着产品更新，生成新功能短片和不同渠道的版本。</blockquote>
+        <p class="lead"><strong>核心交付不是一段视频，而是一套可修改、可复用的产品表达。</strong></p>
+        <div class="flow"><span>Repo / 网站</span><b>→</b><span>产品理解</span><b>→</b><span>故事协商</span><b>→</b><span>拍摄与制作</span><b>→</b><span>审片与修改</span></div>
+      </section>
+
+      <section id="remotion">
+        <div class="eyebrow">02 / 年初的方案与演示</div>
+        <h2>年初，我先把“网站到视频”跑通。</h2>
+        <p class="lead">ProductShot：读取网站信息、抓取真实截图、生成分镜，再用 Remotion 把素材排进时间轴。</p>
+        <div class="demo">
+          <div class="demo-head"><h3>现场演示 / ProductShot</h3><span class="badge">自己的原型</span></div>
+          <div class="demo-body">
+            <p>原型流程：输入网站 → 抓取真实截图 → 查看分镜与预览。下方可直接播放已渲染的成片；在线分享页不提供生成服务。</p>
+            <div class="actions" id="local-productshot" hidden><a class="button primary" href="/" target="_blank" rel="noopener noreferrer">打开本地 ProductShot ↗</a></div>
+            <label for="old-demo" class="caption">选择你之前保存的成片，仅在本机播放，不上传</label><br>
+            <input id="old-demo" type="file" accept="video/*" data-local-video="old-video" data-status="old-status">
+            <p class="media-status" id="old-status" role="status">未选择旧成片。此入口不把新生成的测试片当作历史成果。</p>
+            <video id="old-video" controls playsinline preload="none" hidden aria-label="ProductShot 本地成片"></video>
+            <div class="watch"><span>看信息是否清楚</span><span>看镜头之间是否连续</span><span>分清静态截图与真实操作</span></div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-head"><h3>真实网页截图成片 / Linear · 20 秒</h3><span class="badge">本次重新制作 · 非历史作品</span></div>
+          <div class="demo-body">
+            <p>使用 ProductShot 自己的网页分析接口，实际打开 Linear 官网并截图，再用现有 Remotion 浏览器场景渲染：首页、Intake and integrations、AI and automations。界面没有重画；这里只给原始截图添加入场、平移和转场，不是真实操作录屏。</p>
+            <button type="button" data-load-video="render-video" data-status="render-status">加载真实截图成片</button>
+            <video id="render-video" controls playsinline preload="none" data-src="output/linear-real-capture/linear-real-screenshots.mp4" poster="output/linear-real-capture/viewport.png" hidden aria-label="使用 Linear 官网真实截图制作的 ProductShot 视频"></video>
+            <p class="media-status" id="render-status" role="status">点击加载后播放；也可用上方文件选择器打开自己的旧成片。</p>
+            <p class="caption">2026-09-07 实际抓取，1280 × 720、24 fps、480 帧。分镜由本次人工选取真实截图组成，用于展示现有截图动画路线，不宣称是自主故事生成或用户历史成片。原先使用占位图的渲染测试片已从讲稿撤下。</p>
+          </div>
+        </div>
+        <div class="card" id="early-bottlenecks">
+          <span class="num">看完演示，再看当时的卡点</span>
+          <h3>当时的三个卡点：故事、动效、Agent 执行能力。</h3>
+          <p>回看年初这次尝试，“一卡一卡”的效果主要来自以下三个方面。</p>
+          <h3>1. AI 讲故事的能力不够强</h3>
+          <p>当时用到的大模型更像是在一个一个罗列功能，没能把功能串成有起承转合的故事。这首先是 AI 的故事组织能力问题，而不只是动画怎么排的问题。</p>
+          <h3>2. Remotion 的动效使用不够丰富</h3>
+          <p>年初这版能用上的 Remotion 动效和模板比较有限，反复使用同样的入场、切换效果，所以每一幕看起来都差不多。</p>
+          <h3>3. 当时 AI Agent 的执行能力也不够强</h3>
+          <p>当时这套 Agent 还做不到稳定、长时间地操作并录制产品，基本上只能截个图。缺少连续操作的视频素材，最后就容易变成一张张截图的展示。</p>
+          <div class="quote">故事串不起来、动效比较重复、素材主要是截图——三者叠加，形成了当时“一卡一卡”的效果。</div>
+        </div>
+      </section>
+
+      <section id="seedance">
+        <div class="eyebrow">03 / AI 生视频与它的问题</div>
+        <h2>另一条尝试：<br>让 AI 把产品界面变成动态画面。</h2>
+        <p class="lead">从给截图加入场动画，转向提供界面参考帧和镜头要求，让模型生成视觉变化。先看当时做出的效果。</p>
+        <div class="demo">
+          <div class="demo-head"><h3>Edge 手机端春节主题宣传片 · 约 15 秒</h3><span class="badge">自己的历史作品 · C-Dance / Seedance</span></div>
+          <div class="demo-body">
+            <button type="button" class="primary" data-load-video="seedance-video" data-status="seedance-status">加载当时的 Edge 样片</button>
+            <video id="seedance-video" class="portrait" controls playsinline preload="none" data-src="output/edge-spring-seedance-original.mp4" hidden aria-label="用户提供的 Edge 手机端春节主题 AI 宣传片"></video>
+            <p class="media-status" id="seedance-status" role="status">原片，约 15.07 秒；点击加载后播放。</p>
+            <p class="caption">用户提供并确认当时使用 C-Dance 制作（此处按 Seedance 理解，具体版本未确认）。保留原文件画面，834 × 1112；本次未重新生成或上传外部平台。</p>
+          </div>
+        </div>
+        <div class="card" id="generation-issues">
+          <span class="num">看完样片，再看这条路线的收益与问题</span>
+          <h3>更快、更炫，但还不是完整的产品视频工作流。</h3>
+          <h3>1. 不读产品代码，先由人提供截图</h3>
+          <p>当时使用的是图生视频入口，不是理解仓库的 Agent。要讲哪些功能、挑哪些界面、怎样准备首尾帧，都得先由人完成；模型接到的是画面与提示词，不是产品的完整逻辑。</p>
+          <h3>2. 看着酷，表达仍围绕已有截图</h3>
+          <p>马、红包和主题画面的运动很显眼，但相对“演示一个完整产品任务”，增量主要还是现有界面里的局部变化和视觉包装。它没有因此增加真实操作证据，也没有自动找出截图之外值得讲的新功能。</p>
+          <h3>3. 单段短，调用和重试都要花钱</h3>
+          <p>这支约 15 秒；要做更长的产品介绍，还得拆镜头、衔接和剪辑。生成较快是优势，但要把未采用的候选、重试和后期也计入成本，而不是只算最后留下的短片。</p>
+          <p class="caption">首尾帧用法、制作较快与费用感受来自这次历史制作经验；原片不能证明所有模型都必须输入首尾帧，也不能证明其时长上限。未提供当时的耗时和账单，因此不写具体速度或费用数字。</p>
+          <div class="quote">模型能帮我们做出短而炫的镜头；故事、产品事实与可控修改，仍需要另一层工作流。</div>
+        </div>
+      </section>
+
+      <section id="recording">
+        <div class="eyebrow">04 / 第三次探索：让 Agent 直接录屏</div>
+        <h2>这次有了操作过程，<br>但“录下来”仍不等于“讲清楚”。</h2>
+        <p class="lead">让 Agent 操作产品、录制当前屏幕；录不到的部分，有时用网页补做，再放进视频。先看这次实际成片。</p>
+        <div class="demo">
+          <div class="demo-head"><h3>Biz Table / Agent 录屏成片 · 约 75 秒</h3><span class="badge">用户提供的探索成果</span></div>
+          <div class="demo-body">
+            <button type="button" class="primary" data-load-video="recording-video" data-status="recording-status">加载 Agent 录屏成片</button>
+            <video id="recording-video" controls playsinline preload="none" data-src="output/biz-table-agent-final.mp4" hidden aria-label="用户提供的 Biz Table Agent 录屏与网页补做混合成片"></video>
+            <p class="media-status" id="recording-status" role="status">原片，74.8 秒，1920 × 1080；点击加载后播放。</p>
+            <p class="caption">制作方式依据用户说明；本次检查成片，没有执行或复现片中的产品任务。仅凭 MP4 无法逐镜确认哪些是原始录屏、哪些是网页重建。</p>
+          </div>
+        </div>
+        <div class="card" id="recording-issues">
+          <span class="num">看完样片，再看第三次探索的卡点</span>
+          <h3>比截图更接近任务，但证据、取景和剪辑仍需设计。</h3>
+          <p>片中已经有“提出库存管理需求 → 推荐结构 → 空表 → 数据 → 看板 → 表单”的顺序，还有高亮和字幕，不是完全没有编排。问题在于它还保留了大量屏幕记录的表达方式。</p>
+          <h3>1. 录的是整屏，观众却只需要看关键一步</h3>
+          <p>约 33 秒的库存表、41–50 秒的看板里，左侧 Agent 对话、导航、表格和字幕同时出现。界面字小、信息密集，观众要自己寻找重点。需要裁切、局部放大和分阶段强调，而不是始终让整个工作台占满画面。</p>
+          <h3>2. 录不到就用 AI 补做界面，真实与示意混在一起</h3>
+          <p>按这次制作方式，录不到的部分会让 Agent 用网页补出来，成片里因此混入 AI 生成的界面。补标题和解释动画没有问题，但补做的产品界面或操作结果不能冒充真实录屏，需要明确标注并由开发者确认。</p>
+          <h3>3. 跨镜头需要非常细致地对账</h3>
+          <p>约 16.5 秒的推荐界面写“5 tables”，约 24.8 秒状态写“6 connected tables”。这至少需要解释或统一口径，不能只检查视频能否播放。界面中的表数、记录数、数据、字幕与宣称应逐项对应。</p>
+          <div class="quote">“录屏是真的”不代表整支片子的每个画面都经过事实验证。要把真实操作、解释性包装和重建示意分开管理。</div>
+        </div>
+      </section>
+
+      <section id="comparison">
+        <div class="eyebrow">05 / 三次实际尝试的优缺点</div>
+        <h2>三种办法都能出片，<br>但各自只解决了一部分问题。</h2>
+        <div class="table-wrap">
+          <table>
+            <caption class="caption">回顾当时的三次尝试</caption>
+            <thead><tr><th scope="col">怎么做</th><th scope="col">好在哪里</th><th scope="col">有什么问题</th><th scope="col">以后可以用来做什么</th></tr></thead>
+            <tbody>
+              <tr><td>用 Remotion 把截图做成视频</td><td>用的是真实截图，文字怎么写、画面怎么摆都能改。</td><td>故事像在列功能，动效反复用，素材主要是截图，看起来一卡一卡。</td><td>展示真实界面，给文字和图片加上可调整的动画。</td></tr>
+              <tr><td>把截图交给 AI 生成视频</td><td>能比较快地让画面动起来，看着更炫。</td><td>截图要自己准备；它不理解代码里的功能；一次生成的片段短，多试几次还要花钱。</td><td>做开场或短特效镜头，但不能拿它证明产品真的完成了操作。</td></tr>
+              <tr><td>让 Agent 操作产品并录屏</td><td>能看到产品怎么用，以及操作后的结果。</td><td>录了整屏却看不清重点；录不到就补做界面；前后镜头的数据还得仔细核对。</td><td>录下真实操作，剪掉等待、放大关键步骤，再用于成片。</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="lead">看看 HyperFrames 是如何把这个整个能力工程化起来的。</p>
+      </section>
+
+      <section id="hyperframes">
+        <div class="eyebrow">06 / HyperFrames-剪辑工程化</div>
+        <h2>给它一个产品网址，<br>一支视频是怎样做出来的？</h2>
+        <p class="lead">沿着一次制作来认识 HyperFrames：我们提出要求，它组织素材与动画，我们审片修改，最后拿到成片。Skill、工具和编辑器都在这条过程中出现。</p>
+        <p>重点看它如何把制作过程工程化，再思考我们怎样组织讲解与真实操作，把产品讲得更清楚。</p>
+        <div class="demo">
+          <div class="demo-head"><h3>Linear / HyperFrames 官方示例 · 约 45 秒</h3><span class="badge">工具样例 · 非本次实测</span></div>
+          <div class="demo-body">
+            <button type="button" class="primary" data-load-video="linear-video" data-status="linear-status">加载样片</button>
+            <video id="linear-video" controls playsinline preload="none" data-src="https://static.heygen.ai/hyperframes-oss/docs/images/prompting/example-product-launch-v2.mp4" hidden aria-label="HyperFrames Linear 官方示例"></video>
+            <p class="media-status" id="linear-status" role="status">按需加载，点击播放；需要网络。</p>
+            <div class="actions"><a href="https://static.heygen.ai/hyperframes-oss/docs/images/prompting/example-product-launch-v2.mp4" target="_blank" rel="noopener noreferrer">单独打开视频 ↗</a><a href="https://hyperframes.heygen.com/prompting/product-launch" target="_blank" rel="noopener noreferrer">查看官方提示与出处 ↗</a></div>
+            <div class="watch"><span>看画面是否仍像卡片</span><span>看文字与界面的节奏</span><span>看真实价值是否讲清楚</span></div>
+          </div>
+        </div>
+        <div class="flow"><span>交网址</span><b>→</b><span>确认需求</span><b>→</b><span>取素材</span><b>→</b><span>定分镜</span><b>→</b><span>制作</span><b>→</b><span>审片与修改</span><b>→</b><span>导出</span></div>
+        <div id="skill-walkthrough">
+          <h3>从用户交出网址开始，一步一步往下走。</h3>
+          <p class="caption">以下以本地 Agent + Skill 路径为主线，依据官方 Skill 整理；MCP 是另一种接入路径，不意味着托管端暴露完全相同的文件与工具。示例未在本次执行。</p>
+          <div class="card">
+            <span class="num">01 / 我把网址和要求交给 Agent</span>
+            <h3>先选入口，然后提出同一个制作请求</h3>
+            <p><strong>本地入口：</strong>在编码 Agent 环境安装 HyperFrames Skills，交给它网址和要求。Agent 读取 /hyperframes，再进入产品片工作流；Skill 是执行说明，不是视频模型。</p>
+            <pre aria-label="本地入口和请求示例">安装（示例，本次未执行）：
+npx hyperframes skills update
+
+Using /hyperframes, make a 30-second product intro for https://linear.app.
+先提出故事线供我确认，使用真实页面素材，不虚构产品功能。</pre>
+            <p><strong>不想装本地工具？</strong>可以在支持远程 MCP 的聊天工具里添加托管连接器并授权 HeyGen 账号，通过对话制作与修改。它是另一扇入口，不是视频做好后再接的一道工序。</p>
+            <details id="mcp-entry">
+              <summary>备查：托管 MCP 入口与配置</summary>
+              <pre aria-label="HyperFrames 官方 MCP 地址">https://mcp.heygen.com/mcp/hyperframes/</pre>
+              <p>添加连接器 → HeyGen 授权 → 对话提出要求 → 托管工具制作与渲染。当前为 beta，功能、主机权限、额度与费用需确认；本次未连接，也未触发付费操作。</p>
+              <a href="https://hyperframes.heygen.com/guides/mcp" target="_blank" rel="noopener noreferrer">官方连接步骤 ↗</a>
+            </details>
+            <details id="skill-file-shape">
+            <summary>想看背后的指令？Skill 文件大致长这样</summary>
+            <pre aria-label="Skill 文件结构示意">product-launch-video/
+  SKILL.md       何时使用、按什么顺序做、每一步怎样验收
+  references/    故事、视觉设计、动效等细则
+  scripts/       素材整理、声音、字幕、组装与转场脚本
+  sub-agents/    单个镜头执行者的工作说明
+
+SKILL.md 的形状（中文简化示意，不是原文）：
+---
+name: product-launch-video
+description: 根据产品网址或 brief 制作产品宣传视频
+---
+步骤：确认需求 → 抓取素材 → 统一设计 → 分镜
+      → 声音与视觉设计 → 按镜头写 HTML → 检查和交付
+每步说明：目标、工具、输出文件、通过条件。</pre>
+            <p>Agent 读这份说明后执行，不是把整个文件当成一句提示词丢给视频模型。复杂规则放在引用文件里，机械工作交给脚本；当前流程还会把逐镜制作分给子 Agent。</p>
+            </details>
+          </div>
+          <div class="card chapter-part">
+            <span class="num">02 / 先固定需求</span>
+            <h3>明确给谁看、讲什么、做多长，再创建工程</h3>
+            <p><strong>输入：</strong>网址、受众、核心卖点、时长、比例、是否配音，以及想协作确认还是自动推进。</p>
+            <p><strong>执行：</strong>先由入口工作流确认 brief，初始化项目；同时检查声音等服务的可用状态，说明走本地还是托管服务。</p>
+            <p><strong>留下：</strong><code>BRIEF.md</code> 和 <code>hyperframes.json</code>。以后修改时读已有约定，不每次从零重新问一遍。</p>
+          </div>
+          <div class="card chapter-part">
+            <span class="num">03 / 怎么取素材</span>
+            <h3>不是只拿一张截图，而是形成有出处的素材清单</h3>
+            <pre aria-label="真实网页素材抓取命令示例">npx hyperframes capture "https://linear.app" -o ./capture --json
+
+capture/
+  screenshots/                 页面截图、可用时的完整长截图
+  assets/                      捕获到的素材
+  extracted/tokens.json        品牌颜色、字体等线索
+  extracted/visible-text.txt   页面可见文字
+  extracted/asset-descriptions.md  素材清单与描述</pre>
+            <p>Agent 检查抓取是否成功，再根据清单给镜头选素材。滚动镜头可以移动长截图的视窗；局部放大需要足够清晰的区域截图。需要内部动作时，可保留截图底图、叠加捕获素材，或只重建运动组件。</p>
+            <p><strong>重要规则：</strong>官方 Skill 已要求抓取失败就停下报告，不能为了继续出片自行造一个页面。只有用户明确改用提供的素材或同意风格化重建，才能换路径。原生素材缺失不等于获得虚构界面的授权。</p>
+            <p><strong>补充素材：</strong>音乐、音效、图片等交给 media-use 工作流，Logo 从官方来源取；可选服务取决于账号与配置。</p>
+          </div>
+          <div class="card chapter-part">
+            <span class="num">04 / 怎么把素材变成分镜</span>
+            <h3>先决定每一幕要表达什么，再决定怎么动</h3>
+            <p>先选择设计预设并映射品牌颜色、字体，形成 <code>frame.md</code>。再写 <code>STORYBOARD.md</code>；需要旁白时写 <code>SCRIPT.md</code>，每个镜头指向明确的候选素材。</p>
+            <pre aria-label="分镜教学示意">镜头 02（示意）
+目的：让观众看清一个任务从输入到结果的变化
+素材：已核验的任务界面与结果画面
+动作：先展示全局 → 聚焦关键区域 → 保留结果停顿
+旁白：只讲已确认的产品能力
+衔接：下一幕从当前结果继续，不重新开始
+待确认：这是否是产品真实支持的任务？</pre>
+            <p>协作模式先让用户审故事，按选择提供线框草图再确认布局；自动模式可减少中间提问。随后细化每幕布局、逐秒动作、素材与切换方式，不是直接跳到最终动画。</p>
+            <p>如果配音，先取得真实语音时长，再同步镜头长度；音乐、音效、字幕也和这份计划关联，而不是视频做完再随便贴一条声音。</p>
+          </div>
+          <div class="card chapter-part">
+            <span class="num">05 / 怎么写动画</span>
+            <h3>HTML 放元素，CSS 定外观，时间线安排动作</h3>
+            <p>逐镜执行者读取该镜头的素材、布局、规则和品牌规范，写出 <code>compositions/frames/NN-*.html</code>；最后组装到 <code>index.html</code>。这里的 frame 是一幕画面，不是逐个视频帧都手写文件。</p>
+            <p>动画 Skill 提供动作规则、场景蓝图和转场规范，默认用 GSAP 组织时间线。例如，先让截图出现，再推进到重点，最后显示标注：</p>
+            <pre aria-label="GSAP 动画时间线教学片段">// 教学片段：省略完整 HyperFrames 页面与运行时注册
+const tl = gsap.timeline({ paused: true });
+tl.from(".product-screen", { opacity: 0, y: 24, duration: 0.5 }, 0);
+tl.to(".product-screen", { scale: 1.12, duration: 0.8 }, 1.0);
+tl.from(".callout", { opacity: 0, duration: 0.3 }, 1.8);</pre>
+            <p><strong>为什么暂停时间线？</strong>不是靠打开网页后“等动画播完”，而是让渲染器能定位到指定时刻，得到可重复的画面。官方规范要求可定位、确定性的动画，避免随机数或现实时间造成预览与导出不一致。</p>
+            <p>跨镜头延续的元素要约定切点上的位置、缩放、透明度和方向，避免两个子 Agent 各做各的、拼起来突然跳动。</p>
+          </div>
+          <div class="card chapter-part">
+            <span class="num">06 / 我看预览，提出修改</span>
+            <h3>这时打开 Studio：它就是当前工程的审片与编辑界面</h3>
+            <p>组装各幕、声音和转场后，运行 lint 与 check；用 snapshot 检查每幕中间以及切点前后的画面，查看元素是否跳位、遮挡或不可读。</p>
+            <figure class="tool-figure">
+              <a href="https://hyperframes.heygen.com/studio" target="_blank" rel="noopener noreferrer"><img src="https://static.heygen.ai/hyperframes-oss/docs/images/studio/overview-v1.jpg" alt="HyperFrames 官方 Studio 截图：中间审看画面，下方调整时间线，左右查看素材和元素属性" loading="lazy"></a>
+              <figcaption>官方 Studio 界面截图，非本次本机运行截图；点击查看官方说明。协作流程可更早打开分镜板，此处重点展示成片审改。</figcaption>
+            </figure>
+            <p><strong>我们看到什么：</strong>中间是实际画面，下方是时间线，左侧查工程与素材，右侧调元素属性。不是另起一个产品，而是查看刚才制作出的同一个工程。</p>
+            <pre aria-label="向 Agent 提出局部修改的示例">“第二幕看不清关键操作：
+把结果区域放大一点，标注晚半秒出现。
+保留旁白、品牌颜色和其他镜头。”</pre>
+            <p><strong>指得出的局部问题：</strong>可以在 Studio 调元素和时长，也可以让 Agent 定位第二幕 HTML，修改缩放或时间线。“其他镜头别变”同样是约束。</p>
+            <p><strong>影响故事的变化：</strong>交给 Agent 更新分镜／脚本，再改受影响画面；旁白变长，还要同步镜头和字幕。两种编辑方式修改同一工程，不必把整支片子重新随机生成。</p>
+            <p><strong>再检查一遍修改：</strong>看前后切点和完整播放。技术与画面检查通过，不等于功能事实已经验证；产品状态与数据仍要按证据核对。</p>
+          </div>
+          <div class="card chapter-part">
+            <span class="num">07 / 我确认，工具导出</span>
+            <h3>拿到的不只有 MP4，还有下一次能继续修改的工程</h3>
+            <p>审片反馈处理完毕，按流程确认渲染；工具把确定的时间线导出为视频，同时保留需求、素材、分镜、源码、画面检查图和镜头编号。</p>
+            <pre aria-label="本地工具在流程中的对应命令">打开工程预览：
+npx hyperframes preview
+
+检查修改后的工程：
+npx hyperframes check
+
+确认后导出：
+npx hyperframes render --output video.mp4</pre>
+            <p class="caption">本地工程命令示例，本次未执行。托管 MCP 路径则通过对话请求云端渲染，实际交付与工具能力以服务返回为准。</p>
+            <p>下一次修改继续使用这个工程：改文案、换素材、调节奏，而不是只剩一个无法拆开的最终视频。</p>
+          </div>
+          <div class="actions"><a href="https://github.com/heygen-com/hyperframes/blob/main/skills/product-launch-video/SKILL.md" target="_blank" rel="noopener noreferrer">查看实际产品片 Skill ↗</a><a href="https://github.com/heygen-com/hyperframes/blob/main/skills/hyperframes-animation/SKILL.md" target="_blank" rel="noopener noreferrer">查看动画 Skill ↗</a></div>
+        </div>
+        <div class="quote">从一个网址到可编辑成片：我们确认方向和结果，Agent 按 Skill 组织制作，工具执行，Studio 承接审片修改。</div>
+        <div class="card chapter-part" id="hyperframes-takeaway">
+          <h3>值得借鉴的是工程化，但工程化不等于效果已经足够好。</h3>
+          <p>路由 → 产品片 Skill → 取素材、提方向并确认 → 写动画 → 检查和修改。它把原来分散的工作变成了有规范、有中间产物、可继续编辑的流程。</p>
+          <p>但从这支 Linear 样片看，仍有“标题与界面逐幕出现”的动态 PPT 感：换页更流畅、动作更丰富，不等于产品价值已经通过连续镜头讲清楚。</p>
+          <p>所以我们借鉴它的工作流、动画规范和编辑机制，不直接照搬样片的表现方式；也不能据此认定它的技术上限只到这里。</p>
+        </div>
+      </section>
+
+      <section id="future">
+        <div class="eyebrow">07 / 我们的方案</div>
+        <h2>串场讲清楚，产品展示看得明白，<br>最后交付一个可复用的工程。</h2>
+        <p class="lead">先改善当前“可动 PPT”的表达：串场负责解释和连接，产品展示负责真实操作与结果。不是先承诺微软级，而是先把这两部分做得连贯、清楚、可修改。</p>
+        <div class="chapter-part" id="hybrid-examples">
+          <h3>先看我们最新做的两个例子</h3>
+          <p>来自 Minecraft to LEGO session 的两支 Hackathon 最终提交版。先看完整效果，再拆解故事怎样串起来、产品重点怎样展示。</p>
+          <div class="demo">
+            <div class="demo-head"><h3>Example 1 / Draco AI · 1 分 51 秒</h3><span class="badge">自己的作品 · 最终提交版</span></div>
+            <div class="demo-body">
+              <button type="button" class="primary" data-load-video="draco-example-video" data-status="draco-example-status">加载 Draco AI 成片</button>
+              <video id="draco-example-video" controls playsinline preload="none" data-src="output/draco-ai-submission.mp4" poster="output/draco-ai-submission.jpg" hidden aria-label="Draco AI Hackathon 最终提交版视频"></video>
+              <p class="media-status" id="draco-example-status" role="status">1920 × 1080 · 点击加载后播放。</p>
+              <div class="watch"><span>故事如何引出产品</span><span>串场如何接上展示</span><span>声音如何配合画面</span></div>
+            </div>
+          </div>
+          <div class="demo">
+            <div class="demo-head"><h3>Example 2 / Minecraft to LEGO · 1 分 40 秒</h3><span class="badge">自己的作品 · 最终提交版</span></div>
+            <div class="demo-body">
+              <button type="button" class="primary" data-load-video="minecraft-example-video" data-status="minecraft-example-status">加载 Minecraft to LEGO 成片</button>
+              <video id="minecraft-example-video" controls playsinline preload="none" data-src="output/minecraft-to-lego-submission.mp4" poster="output/minecraft-to-lego-submission.jpg" hidden aria-label="Minecraft to LEGO Hackathon 最终提交版视频"></video>
+              <p class="media-status" id="minecraft-example-status" role="status">1280 × 720 · 点击加载后播放。</p>
+              <div class="watch"><span>产品价值是否讲清</span><span>关键步骤是否突出</span><span>讲解与结果是否连贯</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="caption">以下是拟验证的制作方案，不是已经实现的全自动能力。优先复用 HyperFrames 的流程、规范、编辑与渲染，不把当前样片的表现方式当成最终答案。</p>
+        <div class="flow" id="hybrid-flow"><span>理解产品、确认故事</span><b>→</b><span>镜头任务单</span><b>→</b><span>串场 / 产品展示</span><b>→</b><span>编排与对账</span><b>→</b><span>可复用工程</span></div>
+        <div class="card chapter-part" id="story-contract">
+          <span class="num">01 / 理解产品，先确认故事</span>
+          <h3>先决定讲什么，再决定怎么做画面</h3>
+          <p>读取授权代码、文档和运行页面，与开发者确认目标用户、核心价值、已经实现的功能，以及用哪个真实任务来证明。</p>
+          <p><strong>落档：</strong>已确认的故事线、产品事实与证据、关键文案和不应改变的要求。后面的 Agent 共用这份依据，不各自重新理解一遍。</p>
+        </div>
+        <div class="card chapter-part" id="shot-contract">
+          <span class="num">02 / 将故事拆成镜头任务单</span>
+          <h3>每幕不仅有台词，还要有目的、焦点和前后状态</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">任务单字段</th><th scope="col">要说清楚什么</th></tr></thead>
+              <tbody>
+                <tr><td>镜头编号与表达目的</td><td>这一幕让观众理解什么；对应哪个已确认卖点。</td></tr>
+                <tr><td>类型与制作方式</td><td>真实操作录屏，还是 HTML 讲解；是否需要另行确认生成素材。</td></tr>
+                <tr><td>焦点与起止状态</td><td>观众看哪里，镜头开始和结束时画面是什么。</td></tr>
+                <tr><td>素材与证据来源</td><td>用哪段录制、哪个界面或设计素材；操作结果如何核实。</td></tr>
+                <tr><td>镜头衔接与声音</td><td>怎样接上一幕、下一幕；旁白、停顿与关键动作怎样对应。</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>这是两条制作线共同遵守的约定。只把故事拆成几段文字，再各做各的，很可能又拼成一组动态 PPT。</p>
+        </div>
+        <div class="chapter-part" id="production-branches">
+          <h3>03 / 串场与产品展示，分别制作但保持连贯</h3>
+          <div class="grid two">
+            <div class="card" id="explanation-track">
+              <span class="num">串场 / 解释问题，连接前后镜头</span>
+              <h3>默认 HTML，用户看过不满意再接 AI 生视频</h3>
+              <p>让同一组元素归类、连接、变化，把上一幕的结果带入下一幕的操作。串场要解释“为什么”和“接下来做什么”，而不只是标题飞入、换页。</p>
+              <p>先给出 HTML 版本让用户看效果；用户确认效果不好后，再提出 AI 生视频方案，确认素材权限、预算和用途后执行，不由 Agent 自行跳过这一步。</p>
+              <p><strong>交付：</strong>保留 HTML 源码或 AI 原始输出、时长与声音约定，并明确标记“HTML 制作”或“AI 生成”。生成画面不能冒充实际产品操作。</p>
+            </div>
+            <div class="card" id="recording-track">
+              <span class="num">产品展示 / 关键操作与真实结果</span>
+              <h3>默认录制，Agent 自己规划剪辑和重点强调</h3>
+              <p>用授权测试账号和数据实际操作、核对结果。Agent 根据要突出的内容规划加速、减速、剪切、裁切和放大，并保留原始录像及时间对应关系。</p>
+              <p>录制或剪辑仍无法表达重点时，可以用 HTML 补充高亮、局部动画或重建示意。明确说明哪些是实际录制、哪些是 HTML 写的；未执行过的操作不能被说成已经真实完成。</p>
+              <p><strong>交付：</strong>原始录像、剪辑计划、关键时间点、HTML 源码与素材清单。混合镜头同时标记“录屏 + HTML 叠加”，重建界面标记“HTML 示意”。</p>
+            </div>
+          </div>
+        </div>
+        <div class="card chapter-part" id="assembly-review">
+          <span class="num">04 / 在统一工作台编排、对账和修改</span>
+          <h3>先验单镜头，再验整片；画面、字幕和声音一起对账</h3>
+          <p>单镜头交付时检查任务单和素材，组装后再检查跨镜头关系。可复用 HyperFrames 的时间线、预览、编辑与渲染能力，增加面向产品的对账和反馈界面。</p>
+          <p><strong>来源标注：</strong>在审片工作台和交付清单中逐镜标明“实际录屏 / HTML 制作 / AI 生成”；混合镜头逐层记录。HTML 重建或生成画面可能被误认成真实操作时，成片中也明确标为示意。</p>
+          <div class="grid two">
+            <div class="card"><h3>事实对账</h3><p>功能、字段、数字、状态和字幕是否一致？操作结果能否追溯？哪些是录屏、哪些是解释或重建示意？不确定项交给开发者确认。</p></div>
+            <div class="card"><h3>观看效果对账</h3><p>关键一步能否看清？讲解是否接上操作？镜头是否突然跳转？声音与画面是否同步？观众是否能跟上同一条主线？</p></div>
+            <div class="card"><h3>字幕对账</h3><p>字幕是否对应最终配音和画面？产品名、数字有没有写错？加减速或剪切后，出现和消失的时间是否仍准确？字号、断句和位置是否清楚、不挡关键操作？</p></div>
+            <div class="card"><h3>配音对账</h3><p>是否使用确认后的文案？产品名和术语读音是否正确？语速、停顿是否跟得上操作？跨镜头音量和音色是否一致，有没有截断句子或漏读？</p></div>
+            <div class="card"><h3>音效与音乐对账</h3><p>点击、提示和转场音效是否落在对应动作上？有没有重复、错位或突然截断？音乐和音效是否盖住配音？混音有无爆音，开头结尾是否自然，素材授权是否明确？</p></div>
+          </div>
+          <p><strong>修改闭环：</strong>问题附时间点、镜头编号和字幕／音轨 → 退回对应制作环节修改 → 联动复查画面、配音、字幕和音效 → 再审片。改时长或剪切后必须重新校准同步关系；不是整支重新生成，也不是自动检查通过就免去人的判断。</p>
+        </div>
+        <div class="chapter-part" id="product-capabilities">
+          <h3>我们重点补的能力，落实为三个环节</h3>
+          <div class="grid">
+            <div class="card"><h3>镜头设计与分工 Skill</h3><p>把产品证据和故事变成可执行任务单，判断讲解与录屏各承担什么，而不只是再加动效。</p></div>
+            <div class="card"><h3>连续性编排 Skill</h3><p>让两条制作线共享焦点、起止状态和声音约定，在组装时沿同一问题、元素或结果自然衔接。</p></div>
+            <div class="card"><h3>审片与修订工作台</h3><p>在现有技术检查上，增加产品对账、观看反馈和定向返工；用工具执行重拍和编辑，用版本记录管理变化。</p></div>
+          </div>
+        </div>
+        <div class="card chapter-part" id="product-control">
+          <h3>05 / 最后留下可复用工程，不只是一个 MP4</h3>
+          <p>保留故事与镜头任务单、原始录屏、串场 HTML／生成素材、配音字幕、统一时间线和审片记录，并关联到素材来源及产品版本。</p>
+          <p>产品改了，能定位需要重拍或修改的片段；换渠道，可以调整尺寸、字幕和节奏。统一管理授权、预算和版本，重新检查受影响镜头，不让各模块各改各的。复用开源能力保留来源并遵守许可。</p>
+        </div>
+        <div class="card chapter-part" id="experiment">
+          <h3>怎么证明这样分工确实更好？</h3>
+          <p>用同一个产品、已确认的故事和相同总预算，对比直接使用 HyperFrames 的结果与这条混合流程。分别记录素材准备、人工审片、调用费用和返工次数。</p>
+          <p>看观众能否理解同一个核心价值、关键步骤是否更清楚、事实问题是否更少、修改是否更集中。不能只比动效数量，也不能靠更多人工和无限重试宣称胜出。</p>
+        </div>
+        <div class="quote">近期先做到：串场不是翻页，产品展示不只是整屏记录，交付后还能复用和修改。接下来再看微软级的进阶差距。</div>
+      </section>
+      <section id="gap">
+        <div class="eyebrow">08 / 进阶到大师级别</div>
+        <h2>仍需努力的地方</h2>
+        <p class="lead">把产品讲清楚、展示明白之后，还要继续打磨创意、精细 UI、动作和声音，让整支片子更有表现力。结合这些专业案例，看看我们还能怎样进步。</p>
+        <div class="chapter-part" id="reference-films">
+        <h3>先看参考：Copilot 与其他专业成片</h3>
+        <div class="actions"><a class="button primary" href="https://cmdagency.com/our-work/case-studies/microsoft-365-copilot" target="_blank" rel="noopener noreferrer">查看 Copilot 的成片 ↗</a></div>
+        <p class="caption">进入 CMD 页面后，下滑到视频封面，点击“Play video”。已验证可播放，时长 63 秒；Vimeo 隐私设置不允许直接打开播放器链接。制作方说明包含创意、分镜、动态图形与三维制作，不是自动生成案例。</p>
+        <div class="grid two" id="professional-gaps">
+          <div class="card">
+            <h3>1. 创意：不只讲清楚，还要有记忆点</h3>
+            <p>串场接上操作只是起点。仍需找到专属于产品的视觉主题，用同一条主线带动镜头和情绪，而不是顺序解释功能。</p>
+            <p><strong>参考 Teams：</strong>NotReal 的 Connecting Communities 用自然环境、光影和隐喻表达连接与归属感，让串场也能传达产品价值。</p>
+            <a class="button" href="https://www.stashmedia.tv/notreal-microsoft-keep-on-connecting-communities/" target="_blank" rel="noopener noreferrer">查看 Teams 案例 ↗</a>
+            <p class="caption">软件品牌片；STASH 来源页已核验，视频播放尚未验证成功。</p>
+          </div>
+          <div class="card">
+            <h3>2. UI：不只看得清，还要经得起特写</h3>
+            <p>录屏裁切放大、HTML 补重点之外，仍需准备可拆分的高清 UI，打磨字体、图标、材质和三维资产，才能支撑特写与空间镜头。</p>
+            <p><strong>参考 Microsoft 365 Future Vision：</strong>Tendril 将 UI 设计、动画、三维与灯光合成分工制作，让界面不再只是平面截图。</p>
+            <a class="button" href="https://tendril.ca/work/microsoft-365-future/" target="_blank" rel="noopener noreferrer">查看 Future Vision 案例 ↗</a>
+            <p class="caption">概念愿景片，不代表已上线功能；来源页已核验，视频播放尚未验证成功。</p>
+          </div>
+          <div class="card">
+            <h3>3. 动作：不只剪得顺，还要有表现力</h3>
+            <p>加减速、剪切和放大之外，仍需逐镜打磨轨迹、缓动、惯性、停顿和空间关系，让前后镜头自然接力，形成统一的动作风格。</p>
+            <p><strong>参考 Copilot：</strong>结合上方成片，观察动态图形与三维镜头如何衔接、重点出现时怎样停顿。制作方列出了创意、分镜和动画等专门工作，自动规划不能替代这些打磨。</p>
+          </div>
+          <div class="card">
+            <h3>4. 视听：不只对得上，还要有感染力</h3>
+            <p>字幕、配音和画面同步只是底线。仍需围绕镜头重音和情绪设计音乐、音效层次与动态，同时统一光影、色彩和合成。</p>
+            <p><strong>参考 Microsoft 365：</strong>Tendril 的品牌片把设计、动画、灯光合成与声音一起打磨，塑造统一的软件品牌感受。</p>
+            <a class="button" href="https://tendril.ca/work/microsoft-365/" target="_blank" rel="noopener noreferrer">查看 Microsoft 365 案例 ↗</a>
+            <p class="caption">历史品牌片，含真人素材，非 Copilot 功能演示；来源页已核验，当前 Vimeo 播放连接受限。</p>
+          </div>
+        </div>
+        <details id="references">
+          <summary>更多专业参考：Notion / Slack / Figma</summary>
+          <ul class="sources">
+            <li><a href="https://www.notion.com/blog/introducing-notion-3-0" target="_blank" rel="noopener noreferrer">Notion：任务表达</a> · <a href="https://www.youtube.com/watch?v=xhSJMWUmrF0" target="_blank" rel="noopener noreferrer">视频</a></li>
+            <li><a href="https://sandwich.co/clients/slack/" target="_blank" rel="noopener noreferrer">Slack：团队叙事</a> · <a href="https://fast.wistia.net/embed/iframe/th4gql6npv" target="_blank" rel="noopener noreferrer">视频</a></li>
+            <li><a href="https://oddfellows.tv/work/figma" target="_blank" rel="noopener noreferrer">Figma：品牌视觉</a> · <a href="https://player.vimeo.com/video/1205624956" target="_blank" rel="noopener noreferrer">视频</a></li>
+          </ul>
+        </details>
+        </div>
+        <p>我们的方案可以承载这些进阶制作，但流程本身不会自动提供创意指导、精细资产和专业打磨。还要投入对应的设计能力、素材和审片迭代，再用成片验证。</p>
+        <p class="caption">这里讨论的是我们拟议方案的进阶差距，不是已完成成片的评分。专业案例属于不同类型，也不代表 AI 自动化效果或成本。</p>
+        <div class="quote">先把串场和产品展示做清楚、做连贯，再逐步提高 UI、动作和声音的精细程度。微软级是进阶目标，不是第一步的效果承诺。</div>
+      </section>
+      <footer><button id="previous" type="button">← 上一页</button><span id="page-status" aria-live="polite">01 / 8</span><button id="next" type="button">下一页 →</button></footer>
+    </main>
+  </div>
+  <div id="toast" role="status" hidden></div>
+  <script>
+    (() => {
+      document.getElementById('local-productshot').hidden = !['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname);
+      const sections = [...document.querySelectorAll('main section')];
+      const links = [...document.querySelectorAll('nav a')];
+      const sectionForHash = () => {
+        const target = document.getElementById(location.hash.slice(1));
+        return target ? sections.indexOf(target.closest('section')) : -1;
+      };
+      let index = Math.max(0, sectionForHash());
+      let toastTimer;
+      const localUrls = new Map();
+      const notify = message => {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.hidden = false;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { toast.hidden = true; }, 4500);
+      };
+      const mark = () => {
+        sections.forEach((section, i) => section.classList.toggle('active', i === index));
+        links.forEach((link, i) => {
+          if (i === index) link.setAttribute('aria-current', 'step');
+          else link.removeAttribute('aria-current');
+        });
+        document.getElementById('page-status').textContent = String(index + 1).padStart(2, '0') + ' / ' + sections.length;
+        document.getElementById('previous').disabled = index === 0;
+        document.getElementById('next').disabled = index === sections.length - 1;
+      };
+      const pauseVideos = () => document.querySelectorAll('video').forEach(video => video.pause());
+      const go = (next, updateHash = true) => {
+        index = Math.max(0, Math.min(sections.length - 1, next));
+        pauseVideos();
+        mark();
+        if (updateHash) history.replaceState(null, '', '#' + sections[index].id);
+        sections[index].scrollIntoView({behavior: 'instant', block: 'start'});
+      };
+      links.forEach((link, i) => link.addEventListener('click', event => { event.preventDefault(); go(i); }));
+      const toggleFullscreen = async () => {
+        if (!document.fullscreenEnabled) { notify('当前浏览器不支持页面全屏，可使用浏览器自己的全屏功能。'); return; }
+        try {
+          if (document.fullscreenElement) await document.exitFullscreen();
+          else await document.documentElement.requestFullscreen();
+        } catch (error) { notify('无法进入全屏：' + error.message); }
+      };
+      document.getElementById('previous').addEventListener('click', () => go(index - 1));
+      document.getElementById('next').addEventListener('click', () => go(index + 1));
+      document.addEventListener('keydown', event => {
+        if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey || event.target.closest('input,textarea,select,video,[contenteditable]')) return;
+        if (['ArrowRight', 'PageDown', 'ArrowLeft', 'PageUp'].includes(event.key)) {
+          event.preventDefault();
+          go(index + (['ArrowRight', 'PageDown'].includes(event.key) ? 1 : -1));
+        }
+        if (event.key.toLowerCase() === 'f') { event.preventDefault(); toggleFullscreen(); }
+      });
+      window.addEventListener('hashchange', () => {
+        const target = sectionForHash();
+        if (target >= 0) go(target, false);
+      });
+      const connectMedia = (video, status) => {
+        video.addEventListener('loadedmetadata', () => {
+          const duration = Number.isFinite(video.duration) ? ' · ' + video.duration.toFixed(1) + ' 秒' : '';
+          status.textContent = '媒体已加载' + duration + '。点击播放器开始播放。';
+        });
+        video.addEventListener('error', () => {
+          status.textContent = '视频加载或解码失败。远程素材可尝试原始链接；本地素材请换用浏览器支持的 MP4 / WebM。';
+        });
+        video.addEventListener('play', () => {
+          document.querySelectorAll('video').forEach(other => { if (other !== video) other.pause(); });
+        });
+      };
+      document.querySelectorAll('[data-load-video]').forEach(button => {
+        const video = document.getElementById(button.dataset.loadVideo);
+        const status = document.getElementById(button.dataset.status);
+        connectMedia(video, status);
+        button.addEventListener('click', () => {
+          video.hidden = false;
+          status.textContent = '正在加载视频…';
+          video.src = video.dataset.src;
+          video.load();
+          button.textContent = '重新加载样片';
+        });
+      });
+      document.querySelectorAll('[data-local-video]').forEach(input => {
+        const video = document.getElementById(input.dataset.localVideo);
+        const status = document.getElementById(input.dataset.status);
+        connectMedia(video, status);
+        input.addEventListener('change', () => {
+          const file = input.files[0];
+          if (!file) return;
+          if (!file.type.startsWith('video/') && !/\.(mp4|webm|mov|m4v)$/i.test(file.name)) {
+            status.textContent = '请选择视频文件（MP4 / WebM 等），当前文件无法作为视频播放。';
+            input.value = '';
+            return;
+          }
+          video.pause();
+          if (localUrls.has(video.id)) URL.revokeObjectURL(localUrls.get(video.id));
+          const url = URL.createObjectURL(file);
+          localUrls.set(video.id, url);
+          video.src = url;
+          video.hidden = false;
+          status.textContent = '正在读取本地视频：' + file.name + '。文件不会上传，刷新后需重新选择。';
+          video.load();
+        });
+      });
+      window.addEventListener('pagehide', () => { pauseVideos(); });
+      mark();
+    })();
+  </script>
+</body>
+</html>
