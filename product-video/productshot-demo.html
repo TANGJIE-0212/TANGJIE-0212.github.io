@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>ProductShot 在线体验 · 分镜编辑与预览</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080b19;--panel:#141b35;--line:#354266;--ink:#f0f3ff;--muted:#b0bcd9;--accent:#a494ff}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#39256366,transparent 55%),var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+    a{color:#b6caff}button,input,textarea,select{font:inherit}button,.button{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:#1a2342;color:var(--ink);border-radius:9px;padding:8px 13px;cursor:pointer;text-decoration:none}
+    button:hover,.button:hover{border-color:var(--accent)}button:disabled{opacity:.45;cursor:not-allowed}.primary{background:linear-gradient(110deg,#476be3,#7955d8);border-color:#a494ff}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #bcabff;outline-offset:3px}
+    header,main{max-width:1440px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;border-bottom:1px solid var(--line)}h1{font-size:25px;margin:0}h2{font-size:18px;margin:0 0 14px}p{margin:10px 0}.muted{color:var(--muted);font-size:14px}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .notice{border:1px solid var(--line);background:#18213a;padding:13px 17px;border-radius:12px;margin-bottom:20px}.workspace{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px}.panel{border:1px solid var(--line);background:var(--panel);padding:18px;border-radius:14px;min-width:0}.scene-list{list-style:none;padding:0;margin:0 0 16px;display:grid;gap:10px}.scene-button{width:100%;display:block;text-align:left;background:#0e152b}.scene-button[aria-current="true"]{border-color:#b09bff;background:#302950}.scene-button strong{display:block;overflow-wrap:anywhere}.scene-button span{font-size:13px;color:var(--muted)}.sidebar-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .stage{position:relative;aspect-ratio:16/9;overflow:hidden;border:1px solid #3e4875;border-radius:12px;background:radial-gradient(ellipse at top,#37305e,#0d1025);isolation:isolate;container-type:inline-size}
+    .browser{position:absolute;inset:5% 5% 36%;border:1px solid #6c6a88;border-radius:9px;overflow:hidden;background:#13151e;box-shadow:0 16px 35px #0007}.browser-bar{height:8%;background:#252637;display:flex;align-items:center;padding:0 3%;gap:1%;font-size:1.2cqw;color:#bcc3d9}.dot{width:1%;aspect-ratio:1;border-radius:50%;background:#b49afb}.browser-url{margin-left:2%}.image-window{position:relative;height:92%;overflow:hidden;background:#15171f}.image-window img{width:100%;height:100%;object-fit:cover;object-position:top;transform-origin:center;display:block}
+    .overlay{position:absolute;left:6%;right:6%;bottom:3%;height:27%;display:flex;flex-direction:column;justify-content:center}.overlay h3{font-size:3.3cqw;line-height:1.2;margin:0 0 1%;overflow-wrap:anywhere}.overlay p{font-size:1.65cqw;line-height:1.35;color:#d0d5eb;margin:0;overflow-wrap:anywhere}.stage-label{position:absolute;right:6%;top:1%;font-size:1.1cqw;color:#bdb8d5}.transport{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap}.transport input{flex:1;min-width:90px;accent-color:var(--accent)}output{font-variant-numeric:tabular-nums;font-size:14px}
+    .timeline{display:flex;gap:5px;margin:14px 0}.timeline button{min-width:0;padding:6px 2px;font-size:12px;overflow:hidden;white-space:nowrap}.timeline button[aria-current="true"]{background:#51437b}
+    .editor{margin-top:20px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{display:block;font-size:14px;color:#cdd6ed}label input,label textarea,label select{display:block;width:100%;margin-top:5px;border:1px solid var(--line);background:#0b1228;color:var(--ink);padding:8px 10px;border-radius:8px}textarea{resize:vertical;min-height:70px}.wide{grid-column:1/-1}#status{min-height:26px;color:#d5c6ff;font-size:14px}#status.error{color:#ffb3bb}[hidden]{display:none!important}
+    @media(max-width:900px){.workspace{grid-template-columns:1fr}.scene-list{grid-template-columns:repeat(3,minmax(0,1fr))}.sidebar-actions{display:flex;flex-wrap:wrap}}
+    @media(max-width:520px){header,main{padding:14px}h1{font-size:22px}.panel{padding:12px}.scene-list{grid-template-columns:1fr}.fields{grid-template-columns:1fr}.wide{grid-column:auto}.transport{gap:8px}.stage{border-radius:8px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div><h1>ProductShot 在线体验</h1><p class="muted">预置素材 → 编辑分镜 → 实时预览</p></div>
+    <div class="actions">
+      <a class="button" href="./#remotion" id="back-link">返回分享</a>
+      <button type="button" id="save">下载编辑方案</button>
+      <button type="button" id="import">导入编辑方案</button>
+      <input type="file" id="project-file" accept=".json,application/json" hidden>
+    </div>
+  </header>
+  <main>
+    <div class="notice"><strong>无需登录，直接体验。</strong>使用预置的 Linear 官网真实截图，可改文案、时长、素材、镜头顺序和动效。此版在浏览器内预览，不抓取新网站、不调用 AI、不重新渲染 MP4，也不上传你的编辑内容。</div>
+    <div class="workspace">
+      <aside class="panel" aria-label="分镜管理">
+        <h2>分镜 <span id="scene-count"></span></h2>
+        <ol class="scene-list" id="scene-list"></ol>
+        <div class="sidebar-actions">
+          <button type="button" id="move-up">上移</button>
+          <button type="button" id="move-down">下移</button>
+          <button type="button" id="duplicate">复制一幕</button>
+          <button type="button" id="remove">删除此幕</button>
+          <button type="button" id="reset">恢复预置</button>
+        </div>
+        <p class="muted">点击分镜开始编辑，支持 1–12 幕。修改只保留在此标签页，离开前请下载编辑方案。</p>
+        <p class="muted">素材：2026-09-07 抓取的 <a href="https://linear.app/" target="_blank" rel="noopener noreferrer">Linear 官网</a>截图。仅用于演示截图动画路线，非 Linear 官方宣传片，也不是真实操作录屏。</p>
+      </aside>
+      <div>
+        <section class="panel" aria-label="实时预览">
+          <h2>实时预览 <span class="muted">浏览器动画 · 无音轨</span></h2>
+          <div class="stage" id="stage">
+            <span class="stage-label">PRODUCTSHOT / 预置截图演示</span>
+            <div class="browser" id="browser-frame">
+              <div class="browser-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="browser-url">linear.app</span></div>
+              <div class="image-window"><img id="preview-image" alt="Linear 官网预置截图" src="output/linear-real-capture/viewport.png"></div>
+            </div>
+            <div class="overlay" id="overlay"><h3 id="preview-title"></h3><p id="preview-subtitle"></p></div>
+          </div>
+          <div class="transport">
+            <button type="button" id="play" class="primary" disabled>播放</button>
+            <button type="button" id="restart">回到开头</button>
+            <input type="range" id="seek" min="0" max="21" step="0.01" value="0" aria-label="预览时间">
+            <output id="time">0.0 / 21.0 秒</output>
+          </div>
+          <div class="timeline" id="timeline" aria-label="分镜时间线"></div>
+          <p id="status" role="status">正在加载预置截图…</p>
+        </section>
+        <section class="panel editor" aria-labelledby="editor-title">
+          <h2 id="editor-title">编辑当前分镜</h2>
+          <form id="editor" class="fields">
+            <label class="wide">标题（最多 30 字）<input id="title" maxlength="30" required></label>
+            <label class="wide">说明（最多 70 字）<textarea id="subtitle" maxlength="70" rows="2"></textarea></label>
+            <label>预置截图<select id="asset"><option value="home">Linear 首页</option><option value="intake">Intake and integrations</option><option value="agents">AI and automations</option></select></label>
+            <label>时长（2–20 秒）<input id="duration" type="number" min="2" max="20" step="0.5" required></label>
+            <label>镜头动效<select id="motion"><option value="still">静态展示</option><option value="zoom">缓慢推进</option><option value="pan">轻微平移</option></select></label>
+            <label>镜头结尾<select id="transition"><option value="cut">直接切换</option><option value="fade">淡出切换</option></select></label>
+          </form>
+          <p class="muted">修改后立即更新预览。这里的浏览器动画用于体验编辑过程，不等同于后台 Remotion 渲染；下载的是编辑方案 JSON，不是视频。</p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script>
+    (() => {
+      const $ = id => document.getElementById(id);
+      const assets = {
+        home: { src: 'output/linear-real-capture/viewport.png', name: 'Linear 首页' },
+        intake: { src: 'output/linear-real-capture/section-0.png', name: 'Intake and integrations' },
+        agents: { src: 'output/linear-real-capture/section-1.png', name: 'AI and automations' },
+      };
+      const preset = [
+        { title: '从产品首页开始', subtitle: '先介绍产品，再把镜头带到具体功能。', asset: 'home', duration: 7, motion: 'zoom', transition: 'fade' },
+        { title: '聚焦需求与集成', subtitle: '选取真实网页中的一个重点，不必展示整个屏幕。', asset: 'intake', duration: 7, motion: 'still', transition: 'fade' },
+        { title: '展示 AI 与自动化', subtitle: '用文案和镜头节奏，把不同功能串成一段介绍。', asset: 'agents', duration: 7, motion: 'pan', transition: 'fade' },
+      ];
+      let scenes = structuredClone(preset);
+      let selected = 0;
+      let time = 0;
+      let playing = false;
+      let animation = 0;
+      let lastFrame = 0;
+      const fields = ['title', 'subtitle', 'asset', 'duration', 'motion', 'transition'];
+      const total = () => scenes.reduce((sum, scene) => sum + scene.duration, 0);
+      const startOf = index => scenes.slice(0, index).reduce((sum, scene) => sum + scene.duration, 0);
+      const status = (message, error = false) => {
+        $('status').textContent = message;
+        $('status').classList.toggle('error', error);
+      };
+      if (['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname)) $('back-link').href = 'talk.html#remotion';
+
+      function pause() {
+        playing = false;
+        cancelAnimationFrame(animation);
+        $('play').textContent = '播放';
+      }
+
+      function renderList() {
+        $('scene-list').replaceChildren();
+        $('timeline').replaceChildren();
+        scenes.forEach((scene, index) => {
+          const item = document.createElement('li');
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'scene-button';
+          button.setAttribute('aria-current', String(index === selected));
+          const title = document.createElement('strong');
+          title.textContent = `${String(index + 1).padStart(2, '0')} / ${scene.title}`;
+          const detail = document.createElement('span');
+          detail.textContent = `${scene.duration} 秒 · ${assets[scene.asset].name}`;
+          button.append(title, detail);
+          button.addEventListener('click', () => select(index));
+          item.append(button);
+          $('scene-list').append(item);
+          const segment = document.createElement('button');
+          segment.type = 'button';
+          segment.textContent = `${index + 1} · ${scene.duration}s`;
+          segment.title = scene.title;
+          segment.style.flex = String(scene.duration);
+          segment.setAttribute('aria-label', `跳到第 ${index + 1} 幕：${scene.title}`);
+          segment.setAttribute('aria-current', String(index === selected));
+          segment.addEventListener('click', () => select(index));
+          $('timeline').append(segment);
+        });
+        $('scene-count').textContent = `· ${scenes.length} 幕`;
+        $('move-up').disabled = selected === 0;
+        $('move-down').disabled = selected === scenes.length - 1;
+        $('duplicate').disabled = scenes.length >= 12;
+        $('remove').disabled = scenes.length <= 1;
+        $('seek').max = String(total());
+      }
+
+      function renderEditor() {
+        fields.forEach(key => { $(key).value = scenes[selected][key]; });
+        $('title').setCustomValidity('');
+        $('editor-title').textContent = `编辑第 ${selected + 1} 幕`;
+      }
+
+      function draw() {
+        let index = 0;
+        let offset = 0;
+        while (index < scenes.length - 1 && time >= offset + scenes[index].duration) {
+          offset += scenes[index].duration;
+          index++;
+        }
+        if (selected !== index) {
+          selected = index;
+          renderList();
+          renderEditor();
+        }
+        const scene = scenes[index];
+        const localTime = Math.max(0, Math.min(scene.duration, time - offset));
+        const progress = localTime / scene.duration;
+        const image = $('preview-image');
+        if (image.getAttribute('src') !== assets[scene.asset].src) image.src = assets[scene.asset].src;
+        image.alt = assets[scene.asset].name + ' · 预置官网截图';
+        image.style.transform = scene.motion === 'zoom'
+          ? `scale(${1 + progress * 0.12})`
+          : scene.motion === 'pan' ? `translateY(${2 - progress * 4}%) scale(1.1)` : 'none';
+        const opacity = scene.transition === 'fade' ? Math.min(1, (scene.duration - localTime) / 0.35) : 1;
+        $('browser-frame').style.opacity = String(opacity);
+        $('overlay').style.opacity = String(opacity);
+        $('preview-title').textContent = scene.title;
+        $('preview-subtitle').textContent = scene.subtitle;
+        $('seek').value = String(time);
+        $('time').textContent = `${time.toFixed(1)} / ${total().toFixed(1)} 秒`;
+      }
+
+      function select(index) {
+        pause();
+        selected = index;
+        time = startOf(index);
+        renderList();
+        renderEditor();
+        draw();
+      }
+
+      function tick(now) {
+        if (!playing) return;
+        time = Math.min(total(), time + (now - lastFrame) / 1000);
+        lastFrame = now;
+        draw();
+        if (time >= total()) {
+          pause();
+          status('预览结束。可以修改分镜，或回到开头重新播放。');
+        } else animation = requestAnimationFrame(tick);
+      }
+
+      $('play').addEventListener('click', () => {
+        if (playing) { pause(); return; }
+        if (!$('editor').reportValidity()) return;
+        if (time >= total()) time = 0;
+        playing = true;
+        lastFrame = performance.now();
+        $('play').textContent = '暂停';
+        status('正在播放浏览器预览；未调用后台渲染。');
+        animation = requestAnimationFrame(tick);
+      });
+      $('restart').addEventListener('click', () => select(0));
+      $('seek').addEventListener('input', () => {
+        pause();
+        time = Number($('seek').value);
+        draw();
+      });
+      $('editor').addEventListener('submit', event => event.preventDefault());
+      fields.forEach(key => $(key).addEventListener('input', () => {
+        pause();
+        if (key === 'title') $(key).setCustomValidity($(key).value.trim() ? '' : '标题不能为空。');
+        if (!$(key).validity.valid || (key === 'title' && !$(key).value.trim())) {
+          status(key === 'duration' ? '时长需要是 2–20 秒，步长 0.5 秒；预览仍保留上次有效值。' : '请填写有效的标题；预览仍保留上次有效值。', true);
+          return;
+        }
+        scenes[selected][key] = key === 'duration' ? Number($(key).value) : $(key).value;
+        time = startOf(selected);
+        renderList();
+        draw();
+        status('修改已更新到预览。请下载编辑方案保存。');
+      }));
+      function move(direction) {
+        const destination = selected + direction;
+        [scenes[selected], scenes[destination]] = [scenes[destination], scenes[selected]];
+        select(destination);
+        status('镜头顺序已更新，预览时间线同步调整。');
+      }
+      $('move-up').addEventListener('click', () => move(-1));
+      $('move-down').addEventListener('click', () => move(1));
+      $('duplicate').addEventListener('click', () => {
+        scenes.splice(selected + 1, 0, structuredClone(scenes[selected]));
+        select(selected + 1);
+        status('已复制一幕，可单独修改。');
+      });
+      $('remove').addEventListener('click', () => {
+        scenes.splice(selected, 1);
+        select(Math.min(selected, scenes.length - 1));
+        status('已删除当前分镜，时间线同步调整。');
+      });
+      $('reset').addEventListener('click', () => {
+        pause();
+        if (!confirm('恢复预置三幕？未下载的修改将被替换。')) return;
+        scenes = structuredClone(preset);
+        select(0);
+        status('已恢复预置三幕。');
+      });
+      $('save').addEventListener('click', () => {
+        pause();
+        if (!$('editor').reportValidity() || !$('title').value.trim()) {
+          status('请先修正当前分镜的输入，再下载方案。', true);
+          return;
+        }
+        const blob = new Blob([JSON.stringify({ format: 'productshot-browser-demo', version: 1, scenes }, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = 'productshot-demo.json';
+        document.body.append(anchor);
+        anchor.click();
+        anchor.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        status('已下载编辑方案 JSON，可在此页重新导入；不是 MP4 视频。');
+      });
+      $('import').addEventListener('click', () => { pause(); $('project-file').click(); });
+      $('project-file').addEventListener('change', async () => {
+        const file = $('project-file').files[0];
+        if (!file) return;
+        try {
+          if (file.size > 128 * 1024) throw new Error('方案文件不能超过 128 KB。');
+          const project = JSON.parse(await file.text());
+          if (!project || project.format !== 'productshot-browser-demo' || project.version !== 1 || !Array.isArray(project.scenes) || project.scenes.length < 1 || project.scenes.length > 12) throw new Error('请选择此体验页导出的方案，需包含 1–12 幕。');
+          const imported = project.scenes.map((scene, index) => {
+            if (!scene || typeof scene.title !== 'string' || !scene.title.trim() || scene.title.length > 30 || typeof scene.subtitle !== 'string' || scene.subtitle.length > 70 ||
+              !Object.hasOwn(assets, scene.asset) || !Number.isFinite(scene.duration) || scene.duration < 2 || scene.duration > 20 || !Number.isInteger(scene.duration * 2) ||
+              !['still', 'zoom', 'pan'].includes(scene.motion) || !['cut', 'fade'].includes(scene.transition)) throw new Error(`第 ${index + 1} 幕格式无效；只支持预置素材、有效文案与 2–20 秒时长。`);
+            return Object.fromEntries(fields.map(key => [key, scene[key]]));
+          });
+          if (!confirm('导入此方案并替换当前分镜？未下载的修改将被替换。')) return;
+          scenes = imported;
+          select(0);
+          status('编辑方案已导入，全部内容仅在浏览器内处理。');
+        } catch (error) {
+          status('导入失败：' + (error instanceof Error ? error.message : String(error)), true);
+        } finally {
+          $('project-file').value = '';
+        }
+      });
+      document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+      window.addEventListener('pagehide', pause);
+      select(0);
+      Promise.all(Object.values(assets).map(asset => new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = resolve;
+        image.onerror = () => reject(new Error(`截图加载失败：${asset.name}。请检查网络后刷新页面。`));
+        image.src = asset.src;
+      }))).then(() => {
+        $('play').disabled = false;
+        status('预置截图已就绪。点击播放，或选择一幕开始修改。');
+      }).catch(error => status(error.message, true));
+    })();
+  </script>
+</body>
+</html>
